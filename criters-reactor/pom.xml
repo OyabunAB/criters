@@ -17,7 +17,7 @@
         <module>criters-spring-data-jpa</module>
     </modules>
 
-    <name>Criters Criteria Automation Engine</name>
+    <name>${project.groupId}:${project.artifactId}</name>
     <description>Criters engine is a framework for automating searches using JPA.</description>
     <url>https://github.com/OyabunAB/criters/</url>
 
