@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>se.oyabun.criters</groupId>
     <artifactId>criters-reactor</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -49,7 +49,8 @@
         <url>https://github.com/OyabunAB/criters/</url>
         <connection>scm:git:git://github.com/OyabunAB/criters.git</connection>
         <developerConnection>scm:git:git@github.com:OyabunAB/criters.git</developerConnection>
-    </scm>
+      <tag>criters-reactor-1.0.0</tag>
+  </scm>
 
     <organization>
         <name>Oyabun AB</name>
