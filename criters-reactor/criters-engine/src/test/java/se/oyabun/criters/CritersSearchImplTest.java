@@ -97,6 +97,7 @@ public class CritersSearchImplTest {
 
     }
 
+    @SuppressWarnings("unchecked")
     public void prepareRestrictionExpectations()
             throws InvalidCritersFilteringException {
 
