@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------------------------------
+     .aMMMb  dMMMMb  dMP dMMMMMMP dMMMMMP dMMMMb  .dMMMb
+    dMP"VMP dMP.dMP amr    dMP   dMP     dMP.dMP dMP" VP
+   dMP     dMMMM.  dMP    dMP   dMMMP   dMMMMK   VMMMb
+  dMP.aMP dMP AMF dMP    dMP   dMP     dMP AMF dP .dMP
+  VMMMP" dMP dMP dMP    dMP   dMMMMMP dMP dMP  VMMMP"
+---------------------------------------------------------------------------------------------------
+ Criters Criteria Automation Engine @project.version@ © Oyabun AB 2017
+---------------------------------------------------------------------------------------------------
