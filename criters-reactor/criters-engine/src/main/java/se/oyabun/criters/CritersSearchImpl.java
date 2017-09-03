@@ -16,32 +16,39 @@
 package se.oyabun.criters;
 
 import se.oyabun.criters.criteria.Filter;
-import se.oyabun.criters.criteria.ParameterFilter;
-import se.oyabun.criters.criteria.RelationFilter;
 import se.oyabun.criters.exception.InvalidCritersFilteringException;
-import se.oyabun.criters.util.FilterUtil;
+import se.oyabun.criters.extraction.ParameterExtractor;
+import se.oyabun.criters.extraction.RelationExtractor;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Basic Criters search implementation.
+ *
+ * @param <E> type of entity
+ * @param <S> type of filter
+ * @author Daniel Sundberg
+ */
 public class CritersSearchImpl<E, S extends Filter<E>>
-        implements CritersSearch {
+        implements CritersSearch<E> {
 
     private final S searchCriteria;
     private final CriteriaBuilder criteriaBuilder;
-    private final CriteriaQuery<?> criteriaQuery;
+    private final CriteriaQuery<E> criteriaQuery;
     private final Root<E> root;
+
+    private ParameterExtractor parameterExtractor = new ParameterExtractor();
+    private RelationExtractor relationExtractor = new RelationExtractor();
 
     private Predicate finalRestrictions;
 
     CritersSearchImpl(final CriteriaBuilder criteriaBuilder,
-                      final CriteriaQuery<?> criteriaQuery,
+                      final CriteriaQuery<E> criteriaQuery,
                       final Root<E> root,
                       final S searchCriteria) {
 
@@ -51,11 +58,23 @@ public class CritersSearchImpl<E, S extends Filter<E>>
         this.searchCriteria = searchCriteria;
     }
 
+    void using(final ParameterExtractor parameterExtractor) {
+
+        this.parameterExtractor = parameterExtractor;
+
+    }
+
+    void using(final RelationExtractor relationExtractor) {
+
+        this.relationExtractor = relationExtractor;
+
+    }
+
     /**
      * ${@inheritDoc}
      */
     @Override
-    public CriteriaQuery<?> criteria()
+    public CriteriaQuery<E> criteria()
             throws InvalidCritersFilteringException {
 
         return criteriaQuery.where(restrictions());
@@ -69,8 +88,13 @@ public class CritersSearchImpl<E, S extends Filter<E>>
     public Predicate restrictions()
             throws InvalidCritersFilteringException {
 
-        final Predicate propertyRestrictions = parameterRestriction(searchCriteria, criteriaBuilder, root);
-        final Predicate relationRestrictions = relationRestrictions(searchCriteria, criteriaBuilder, root);
+        final Predicate propertyRestrictions = parameterExtractor.generatePredicate(searchCriteria,
+                                                                                    criteriaBuilder,
+                                                                                    root);
+
+        final Predicate relationRestrictions = relationExtractor.generatePredicate(searchCriteria,
+                                                                                   criteriaBuilder,
+                                                                                   root);
 
         finalRestrictions =
                 Objects.nonNull(propertyRestrictions) &&
@@ -82,158 +106,6 @@ public class CritersSearchImpl<E, S extends Filter<E>>
                                 .orElseThrow(IllegalStateException::new);
 
         return finalRestrictions;
-
-    }
-
-    Predicate parameterRestriction(final S searchCriteria,
-                                   final CriteriaBuilder criteriaBuilder,
-                                   final Root<E> root)
-            throws InvalidCritersFilteringException {
-
-        Predicate combinedPredicates = null;
-
-        for(final Method method : FilterUtil.parameterMethods(searchCriteria)) {
-
-            FilterUtil.validatePropertyParameter(method, searchCriteria.getEntityClass());
-
-            final ParameterFilter parameterFilter = method.getAnnotation(ParameterFilter.class);
-
-            final Predicate currentPredicate;
-
-            switch (parameterFilter.restriction()) {
-
-                case EQUALS: {
-
-                    try {
-
-                         currentPredicate =
-                                criteriaBuilder.equal(
-                                        root.get(parameterFilter.sourceParameter()),
-                                        method.invoke(searchCriteria));
-
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-
-                        throw new InvalidCritersFilteringException("Failed to access criteria parameter.", e);
-
-                    }
-
-                    break;
-
-                }
-
-                case NOT_EQUALS: {
-
-
-                    try {
-
-                        currentPredicate =
-                                criteriaBuilder.notEqual(
-                                        root.get(parameterFilter.sourceParameter()),
-                                        method.invoke(searchCriteria));
-
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-
-                        throw new InvalidCritersFilteringException("Failed to access criteria parameter.", e);
-
-                    }
-
-                    break;
-
-                }
-
-                default: {
-
-                    throw new InvalidCritersFilteringException("No parameter prepared restriction found for '" +
-                                                               method.getName() +
-                                                               "'.");
-                }
-
-            }
-
-            combinedPredicates =
-                    Objects.nonNull(combinedPredicates) ?
-                        criteriaBuilder.and(combinedPredicates, currentPredicate) :
-                        currentPredicate;
-
-        }
-
-        return combinedPredicates;
-
-    }
-
-    Predicate relationRestrictions(final S searchCriteria,
-                                   final CriteriaBuilder criteriaBuilder,
-                                   final Root<E> root)
-            throws InvalidCritersFilteringException {
-
-        Predicate combinedPredicates = null;
-
-        for(final Method method : FilterUtil.relationalMethods(searchCriteria)) {
-
-            FilterUtil.validatePropertyRelation(method, searchCriteria.getEntityClass());
-
-            final RelationFilter filterRelation = method.getAnnotation(RelationFilter.class);
-
-            final Predicate currentPredicate;
-
-            switch (filterRelation.restriction()) {
-
-                case IN: {
-
-                    try {
-
-                        currentPredicate =
-                                root.join(filterRelation.relationSourceParameter())
-                                    .get(filterRelation.relationTargetParameter())
-                                    .in(method.invoke(searchCriteria));
-
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-
-                        throw new InvalidCritersFilteringException("Failed to access prepare parameter.", e);
-
-                    }
-
-                    break;
-
-                }
-
-                case NOT_IN: {
-
-                    try {
-
-                        currentPredicate =
-                            criteriaBuilder.not(
-                                    root.join(filterRelation.relationSourceParameter())
-                                        .get(filterRelation.relationTargetParameter())
-                                        .in(method.invoke(searchCriteria)));
-
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-
-                        throw new InvalidCritersFilteringException("Failed to access prepare parameter.", e);
-
-                    }
-
-                    break;
-
-                }
-
-                default: {
-
-                    throw new InvalidCritersFilteringException("No parameter prepare restriction found for '" +
-                                                               method.getName() + "'.");
-
-                }
-
-            }
-
-            combinedPredicates =
-                    Objects.nonNull(combinedPredicates) ?
-                    criteriaBuilder.and(combinedPredicates, currentPredicate) :
-                    currentPredicate;
-
-        }
-
-        return combinedPredicates;
 
     }
 

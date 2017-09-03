@@ -27,6 +27,13 @@ import javax.persistence.criteria.Root;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Criters basic search factory implementation.
+ *
+ * @param <E> type of entity
+ * @param <S> type of filter
+ * @author Daniel Sundberg
+ */
 public class CritersFactoryImpl<E, S extends Filter<E>>
             implements CritersFactory<E, S> {
 
@@ -39,8 +46,8 @@ public class CritersFactoryImpl<E, S extends Filter<E>>
     static final String ENTITY_MANAGER_OR_ROOT_REQUIRED = "Entity manager or root required to validate class.";
 
     private EntityManager entityManager;
-    private Root<?> root;
-    private CriteriaQuery<?> criteriaQuery;
+    private Root<E> root;
+    private CriteriaQuery<E> criteriaQuery;
     private CriteriaBuilder criteriaBuilder;
     private S searchFilter;
 
@@ -79,8 +86,8 @@ public class CritersFactoryImpl<E, S extends Filter<E>>
      * ${@inheritDoc}
      */
     @Override
-    public CritersFactory<E, S> use(final Root<?> root,
-                                    final CriteriaQuery<?> criteriaQuery,
+    public CritersFactory<E, S> use(final Root<E> root,
+                                    final CriteriaQuery<E> criteriaQuery,
                                     final CriteriaBuilder criteriaBuilder)
             throws InvalidCritersTargetException {
 
@@ -143,7 +150,7 @@ public class CritersFactoryImpl<E, S extends Filter<E>>
      * ${@inheritDoc}
      */
     @Override
-    public CritersSearch build() {
+    public CritersSearch<E> build() {
 
         if(Objects.nonNull(searchFilter)) {
 
@@ -155,8 +162,8 @@ public class CritersFactoryImpl<E, S extends Filter<E>>
                 try {
 
                     final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-                    final CriteriaQuery<?> criteriaQuery = criteriaBuilder.createQuery(searchFilter.getEntityClass());
-                    final Root<?> root = criteriaQuery.from(searchFilter.getEntityClass());
+                    final CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery(searchFilter.getEntityClass());
+                    final Root<E> root = criteriaQuery.from(searchFilter.getEntityClass());
                     this.use(root, criteriaQuery, criteriaBuilder);
 
                 } catch (InvalidCritersTargetException e) {
@@ -171,7 +178,7 @@ public class CritersFactoryImpl<E, S extends Filter<E>>
 
                 if(logger.isDebugEnabled()) {
 
-                    logger.debug("Prepared search filter.");
+                    logger.debug("Using pre-configured components for search.");
 
                 }
 
@@ -181,10 +188,10 @@ public class CritersFactoryImpl<E, S extends Filter<E>>
 
             }
 
-            return  new CritersSearchImpl<>(criteriaBuilder,
-                                            criteriaQuery,
-                                            (Root<E>) root,
-                                            searchFilter);
+            return new CritersSearchImpl<>(criteriaBuilder,
+                                           criteriaQuery,
+                                           root,
+                                           searchFilter);
 
         } else {
 

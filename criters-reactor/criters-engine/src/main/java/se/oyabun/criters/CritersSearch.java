@@ -20,19 +20,25 @@ import se.oyabun.criters.exception.InvalidCritersFilteringException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 
-public interface CritersSearch {
+/**
+ * Criters search interface providing both a {@link CriteriaQuery} and the ability
+ * to produce a combined restrictions {@link Predicate}.
+ *
+ * @author Daniel Sundberg
+ */
+public interface CritersSearch<E> {
 
     /**
-     * Return search generated criteria
+     * Return search generated criteria.
      *
      * @throws InvalidCritersFilteringException if restrictions fails to calculate
      * @return criteria with calculated restrictions
      */
-    CriteriaQuery<?> criteria()
+    CriteriaQuery<E> criteria()
             throws InvalidCritersFilteringException;
 
     /**
-     * Return calculated restrictions
+     * Return calculated restrictions.
      *
      * @throws InvalidCritersFilteringException if restrictions fails to calculate
      * @return restrictions based on search criteria

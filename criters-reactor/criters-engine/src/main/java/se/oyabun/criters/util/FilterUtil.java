@@ -29,12 +29,19 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Filtering util containing externalized class handling methods
+ *
+ * @author Daniel Sundberg
+ */
 public class FilterUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(FilterUtil.class);
 
+    private static final String GETTER_PREFIX = "get";
+    
     /**
-     * Introspect prepare criteria for get methods with parameter annotations.
+     * Introspect criteria for get methods with parameter annotations.
      *
      * @param searchCriteria to introspect
      * @param <E> type of target class
@@ -45,14 +52,13 @@ public class FilterUtil {
 
         return Arrays.stream(searchCriteria.getClass().getDeclaredMethods())
                      .filter(method -> method.isAnnotationPresent(ParameterFilter.class))
-                     .filter(method -> method.getName().startsWith("get"))
                      .filter(method -> method.getParameterCount() == 0)
                      .collect(Collectors.toList());
 
     }
 
     /**
-     * Introspect prepare criteria for get methods with relation annotations.
+     * Introspect criteria for get methods with relation annotations.
      *
      * @param searchCriteria to introspect
      * @param <E> type of target class
@@ -63,14 +69,13 @@ public class FilterUtil {
 
         return Arrays.stream(searchCriteria.getClass().getDeclaredMethods())
                      .filter(method -> method.isAnnotationPresent(RelationFilter.class))
-                     .filter(method -> method.getName().startsWith("get"))
                      .filter(method -> method.getParameterCount() == 0)
                      .collect(Collectors.toList());
 
     }
 
     /**
-     * Validate method is corresponding to similar on target type
+     * Validate method is corresponding to target type method
      *
      * @param searchCriteriaMethod which should match target type
      * @param type on which getter should match
@@ -79,8 +84,7 @@ public class FilterUtil {
      */
     public static <E> void validatePropertyParameter(final Method searchCriteriaMethod,
                                                      final Class<E> type)
-            throws
-            InvalidCritersFilteringException {
+            throws InvalidCritersFilteringException {
 
         if(searchCriteriaMethod.isAnnotationPresent(ParameterFilter.class)) {
 
@@ -139,8 +143,7 @@ public class FilterUtil {
      */
     public static < E > void validatePropertyRelation(final Method searchCriteriaMethod,
                                                       final Class<E> type)
-            throws
-            InvalidCritersFilteringException {
+            throws InvalidCritersFilteringException {
 
         if(searchCriteriaMethod.isAnnotationPresent(RelationFilter.class)) {
 
@@ -149,10 +152,15 @@ public class FilterUtil {
             final Optional<Method> optionalTargetMethod =
                     Arrays.stream(type.getMethods())
                           .filter(method -> method.getName().equals(
-                                  "get"+StringUtils.capitalize(filterRelation.relationSourceParameter())))
+                                  GETTER_PREFIX + StringUtils.capitalize(
+                                          filterRelation.sourceParameterName())))
                           .findFirst();
 
             if(optionalTargetMethod.isPresent()) {
+
+                final String getterMethodName =
+                        GETTER_PREFIX + StringUtils.capitalize(
+                                filterRelation.relationTargetParameter());
 
                 final Method targetMethod = optionalTargetMethod.get();
                 Class targetClass = targetMethod.getReturnType();
@@ -171,10 +179,7 @@ public class FilterUtil {
 
                 final Optional<Method> optionalTargetRelationParameterMethod =
                         Arrays.stream(targetClass.getDeclaredMethods())
-                              .filter(method ->
-                                      method.getName().equals(
-                                              "get"+ StringUtils.capitalize(
-                                                      filterRelation.relationTargetParameter())))
+                              .filter(method -> method.getName().equals(getterMethodName))
                               .findFirst();
 
                 if(optionalTargetRelationParameterMethod.isPresent()) {
@@ -200,8 +205,8 @@ public class FilterUtil {
                 } else {
 
                     throw new InvalidCritersFilteringException(
-                            "Failed to identify filtering method '" + filterRelation.relationSourceParameter() +
-                            "' on relational object.");
+                            "Failed to identify filtering method '" + getterMethodName +
+                            "' on relational object '"+targetClass.getSimpleName()+"'.");
 
                 }
 

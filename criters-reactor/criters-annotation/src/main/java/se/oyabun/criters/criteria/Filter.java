@@ -17,6 +17,12 @@ package se.oyabun.criters.criteria;
 
 import java.lang.reflect.ParameterizedType;
 
+/**
+ * Basic filter class, enforcing typing of filter.
+ *
+ * @param <E> type of entity
+ * @author Daniel Sundberg
+ */
 public abstract class Filter<E> {
 
     private final Class<E> filterClass;

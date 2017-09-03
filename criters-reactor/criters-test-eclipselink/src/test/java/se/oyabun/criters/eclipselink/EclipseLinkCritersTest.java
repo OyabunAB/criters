@@ -18,7 +18,9 @@ package se.oyabun.criters.eclipselink;
 import se.oyabun.criters.test.CritersTest;
 
 /**
- * EclipseLink specific tests, extending general JPA tests
+ * EclipseLink specific tests, extending general JPA tests.
+ *
+ * @author Daniel Sundberg
  */
 public class EclipseLinkCritersTest
         extends CritersTest {

@@ -37,7 +37,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -125,12 +124,12 @@ public abstract class CritersTest {
         final FooParameterFilter fooParameterCriteria = new FooParameterFilter();
         fooParameterCriteria.setValue(TEST_VALUE);
 
-        final Stream<Foo> fooStream = (Stream<Foo>) entityManager.createQuery(
-                critersFactory.prepare(fooParameterCriteria)
-                              .build()
-                              .criteria()).getResultStream();
-
-        final List<Foo> testEntities = fooStream.collect(Collectors.toList());
+        final List<Foo> testEntities =
+                entityManager.createQuery(
+                        critersFactory.prepare(fooParameterCriteria)
+                                      .build().criteria())
+                             .getResultStream()
+                             .collect(Collectors.toList());
 
         assertThat(testEntities.size(), is(1));
         assertThat(testEntities.iterator().next().getValue(), is(TEST_VALUE));

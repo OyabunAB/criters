@@ -10,11 +10,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>se.oyabun.criters</groupId>
     <artifactId>criters-spring-data-jpa</artifactId>
 
     <dependencies>
-
         <!-- Criters dependencies -->
         <dependency>
             <groupId>se.oyabun.criters</groupId>
@@ -27,7 +25,6 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>1.11.6.RELEASE</version>
         </dependency>
         <!-- Persistence provider dependencies -->
         <dependency>
@@ -51,6 +48,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>se.oyabun.criters.test</groupId>
             <artifactId>criters-test-core</artifactId>
             <scope>test</scope>
@@ -68,13 +70,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>1.5.6.RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>1.5.6.RELEASE</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

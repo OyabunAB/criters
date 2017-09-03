@@ -69,13 +69,13 @@ public class CritersFactoryImplTest {
     private Filter<Foo> filterStubb = new Filter<Foo>() {
 
         @ParameterFilter(restriction = ParameterFilter.Restriction.EQUALS,
-                         sourceParameter = "value")
+                         sourceParameterName = "value")
         public Integer equalsValue() {
             return EQUALS_VALUE;
         }
 
         @ParameterFilter(restriction = ParameterFilter.Restriction.NOT_EQUALS,
-                         sourceParameter = "value")
+                         sourceParameterName = "value")
         public Integer notEquals() {
             return NOT_EQUALS_VALUE;
         }

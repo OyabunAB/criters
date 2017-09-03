@@ -21,13 +21,18 @@ import se.oyabun.criters.test.data.Foo;
 
 import static se.oyabun.criters.criteria.ParameterFilter.Restriction;
 
+/**
+ * Parameter restricting Foo typed filter.
+ *
+ * @author Daniel Sundberg
+ */
 public class FooParameterFilter
         extends Filter<Foo> {
 
     private Integer value;
 
     @ParameterFilter(restriction = Restriction.EQUALS,
-                     sourceParameter="value")
+                     sourceParameterName ="value")
     public Integer getValue() {
 
         return value;

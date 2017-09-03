@@ -15,7 +15,12 @@
  */
 package se.oyabun.criters.exception;
 
-public class CritersException
+/**
+ * Basic checked exception.
+ *
+ * @author Daniel Sundberg
+ */
+public abstract class CritersException
         extends Exception {
 
     public CritersException(final String message) {

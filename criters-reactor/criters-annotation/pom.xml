@@ -9,8 +9,7 @@
         <artifactId>criters-reactor</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
-    <groupId>se.oyabun.criters</groupId>
+    
     <artifactId>criters-annotation</artifactId>
 
     <dependencies>

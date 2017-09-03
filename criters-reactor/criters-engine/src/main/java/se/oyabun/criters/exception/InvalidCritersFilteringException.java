@@ -15,6 +15,11 @@
  */
 package se.oyabun.criters.exception;
 
+/**
+ * Exception indicating an invalid filter problem.
+ *
+ * @author Daniel Sundberg
+ */
 public class InvalidCritersFilteringException
         extends CritersSearchCriteriaException {
 

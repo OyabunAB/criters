@@ -15,6 +15,11 @@
  */
 package se.oyabun.criters.exception;
 
+/**
+ * Exception indicating an exceptional state from a search criteria.
+ *
+ * @author Daniel Sundberg
+ */
 public class CritersSearchCriteriaException
         extends CritersException {
 

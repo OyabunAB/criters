@@ -15,6 +15,11 @@
  */
 package se.oyabun.criters.exception;
 
+/**
+ * Exception indicating a problem with target parameters.
+ *
+ * @author Daniel Sundberg
+ */
 public class InvalidCritersTargetException
         extends CritersException {
 

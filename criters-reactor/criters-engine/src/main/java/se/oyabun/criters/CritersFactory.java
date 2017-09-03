@@ -23,6 +23,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+/**
+ * Criters search factory interface.
+ *
+ * @param <E> type of entity
+ * @param <S> type of filter
+ * @author Daniel Sundberg
+ */
 public interface CritersFactory<E, S extends Filter<E>> {
 
     /**
@@ -44,28 +51,31 @@ public interface CritersFactory<E, S extends Filter<E>> {
      * @throws InvalidCritersTargetException if target not found on entity manager
      * @return configured factory
      */
-    CritersFactory<E, S> use(final Root<?> root,
-                             final CriteriaQuery<?> criteriaQuery,
+    CritersFactory<E, S> use(final Root<E> root,
+                             final CriteriaQuery<E> criteriaQuery,
                              final CriteriaBuilder criteriaBuilder)
             throws InvalidCritersTargetException;
 
     /**
      * Hunt for a specific criters based on given criteria
+     *
      * @param searchFilter to be used for search
      * @throws InvalidCritersTargetException if target not found on entity manager
-     * @return generated criters
+     * @return configured factory
      */
     CritersFactory<E, S>  prepare(final S searchFilter)
             throws InvalidCritersTargetException;
 
     /**
      * Produce a critters search based on configured search filter and entity manager
+     *
      * @return new critters search
      */
-    CritersSearch build();
+    CritersSearch<E> build();
 
     /**
      * Can this bounty hunter find criters for given type
+     *
      * @param targetClass type that feeds criters
      * @return true if hunter can find criters of given type
      */

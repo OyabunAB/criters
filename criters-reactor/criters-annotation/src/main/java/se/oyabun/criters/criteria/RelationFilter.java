@@ -21,7 +21,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Filtering relation annotation, used on non-basic type relations
+ * Filtering relation annotation, used on non-basic type relations.
+ *
+ * @author Daniel Sundberg
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -29,7 +31,7 @@ public @interface RelationFilter {
 
     Restriction restriction() default Restriction.IN;
 
-    String relationSourceParameter();
+    String sourceParameterName();
 
     boolean relationSourceCollection() default false;
 
@@ -39,7 +41,8 @@ public @interface RelationFilter {
 
     enum Restriction {
 
-        IN, NOT_IN
+        IN,
+        NOT_IN
 
     }
 

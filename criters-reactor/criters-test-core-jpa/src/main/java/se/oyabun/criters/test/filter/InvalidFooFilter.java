@@ -21,6 +21,11 @@ import se.oyabun.criters.test.data.Foo;
 
 import static se.oyabun.criters.criteria.ParameterFilter.Restriction;
 
+/**
+ * Intentionally invalid Foo typed filter.
+ *
+ * @author Daniel Sundberg
+ */
 public class InvalidFooFilter
         extends Filter<Foo> {
 
@@ -31,7 +36,7 @@ public class InvalidFooFilter
      * @return wrong type, non existing fieldname
      */
     @ParameterFilter(restriction = Restriction.EQUALS,
-                     sourceParameter="invalidValue")
+                     sourceParameterName ="invalidValue")
     public Long getInvalidValue() {
 
         return invalidValue;

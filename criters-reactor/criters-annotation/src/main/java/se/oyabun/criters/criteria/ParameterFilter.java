@@ -21,19 +21,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Filtering parameter annotation, used on direct parameters
+ * Filtering parameter annotation, used on direct parameters.
+ *
+ * @author Daniel Sundberg
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ParameterFilter {
 
-    Restriction restriction();
+    Restriction restriction() default Restriction.EQUALS;
 
-    String sourceParameter();
+    String sourceParameterName();
 
     enum Restriction {
 
-        EQUALS, NOT_EQUALS
+        EQUALS,
+        NOT_EQUALS
 
     }
 
