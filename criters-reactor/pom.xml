@@ -19,6 +19,10 @@
         <module>criters-spring-data-jpa</module>
     </modules>
 
+    <name>Criters Criteria Automation Engine</name>
+    <description>Criters engine is a framework for automating searches using JPA.</description>
+    <url>https://github.com/OyabunAB/criters/</url>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -27,22 +31,6 @@
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
-
-    <organization>
-        <name>Oyabun AB</name>
-        <url>https://www.oyabun.se</url>
-    </organization>
-
-    <issueManagement>
-        <url>https://github.com/OyabunAB/criters/issues</url>
-        <system>GitHub Issues</system>
-    </issueManagement>
-
-    <scm>
-        <url>https://github.com/OyabunAB/criters/</url>
-        <connection>scm:git:git://github.com/OyabunAB/criters.git</connection>
-        <developerConnection>scm:git:git@github.com:OyabunAB/criters.git</developerConnection>
-    </scm>
 
     <developers>
         <developer>
@@ -58,6 +46,22 @@
             <timezone>GMT+1</timezone>
         </developer>
     </developers>
+
+    <scm>
+        <url>https://github.com/OyabunAB/criters/</url>
+        <connection>scm:git:git://github.com/OyabunAB/criters.git</connection>
+        <developerConnection>scm:git:git@github.com:OyabunAB/criters.git</developerConnection>
+    </scm>
+
+    <organization>
+        <name>Oyabun AB</name>
+        <url>https://www.oyabun.se</url>
+    </organization>
+
+    <issueManagement>
+        <url>https://github.com/OyabunAB/criters/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
 
     <distributionManagement>
         <snapshotRepository>
