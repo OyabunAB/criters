@@ -23,7 +23,9 @@ pipeline {
         stage('Build Proctor') {
             steps {
                 milestone(ordinal: 2, label: 'Build and test code')
-                sh('mvn verify')
+                dir('criters-reactor') {
+                    sh('mvn verify')
+                }
             }
         }
     }
