@@ -6,7 +6,7 @@
       VMMMP" dMP dMP dMP    dMP   dMMMMMP dMP dMP  VMMMP"
     --------------------------------------------------------------------------------------------------- 
 ---
-# Criters Criteria Automation Engine [![Build Status](https://jenkins.oyabun.se/buildStatus/icon?job=OyabunAB/criters/master)](https://jenkins.oyabun.se/job/OyabunAB/criters/master)
+# Criters Criteria Automation Engine [![Build Status](https://jenkins.oyabun.se/buildStatus/icon?job=OyabunAB/criters/master)](https://jenkins.oyabun.se/job/OyabunAB/criters/master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.oyabun.criters/criters-reactor/badge.svg)](https://maven-badges.herokuapp.com/maven-central/se.oyabun.criters/criters-reactor)
 ### Configuration
 #### Search filter configuration
 
