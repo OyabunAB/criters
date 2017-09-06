@@ -16,14 +16,14 @@
 package se.oyabun.criters.test.filter;
 
 import se.oyabun.criters.criteria.Filter;
-import se.oyabun.criters.criteria.RelationFilter;
-import se.oyabun.criters.test.data.Bar;
+import se.oyabun.criters.criteria.Parameter;
+import se.oyabun.criters.criteria.Relation;
+import se.oyabun.criters.criteria.Relations;
+import se.oyabun.criters.criteria.Restriction;
 import se.oyabun.criters.test.data.Foo;
 
-import static se.oyabun.criters.criteria.RelationFilter.Restriction;
-
 /**
- * Relation restriction focused Foo typed filter.
+ * Relations restriction focused Foo typed filter.
  *
  * @author Daniel Sundberg
  */
@@ -32,24 +32,46 @@ public class FooRelationFilter
 
     private long barId;
 
-    public FooRelationFilter(final long barId) {
+    private String bazValue;
+
+    public FooRelationFilter(final long barId,
+                             final String bazValue) {
 
         this.barId = barId;
+        this.bazValue = bazValue;
     }
 
-    @RelationFilter(restriction = Restriction.IN,
-                    sourceParameterName = "bars",
-                    relationSourceCollection = true,
-                    relationTargetType = Bar.class,
-                    relationTargetParameter = "id")
+    @Relations({
+            @Relation(name="bars",
+                      iterable = true,
+                      parameters = {
+                    @Parameter(name = "id",
+                               restriction = Restriction.EQUALS)
+            })
+    })
     public long getBarId() {
 
         return barId;
     }
 
-    public void setBarId(long barId) {
+    public void setBarValue(long barId) {
 
         this.barId = barId;
+    }
+
+    @Relations({
+            @Relation(name = "bars",
+                      iterable = true),
+            @Relation(name="baz",
+                      parameters = {
+                    @Parameter(name = "value",
+                               restriction = Restriction.EQUALS)
+            })
+    })
+    public String getBazValue() {
+
+        return bazValue;
+
     }
 
 }

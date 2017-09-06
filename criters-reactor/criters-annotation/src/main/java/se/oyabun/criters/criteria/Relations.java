@@ -21,23 +21,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Filtering parameter annotation, used on direct parameters.
+ * Wrapper annotation to indicate nested relation restriction
  *
  * @author Daniel Sundberg
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface ParameterFilter {
+public @interface Relations {
 
-    Restriction restriction() default Restriction.EQUALS;
-
-    String sourceParameterName();
-
-    enum Restriction {
-
-        EQUALS,
-        NOT_EQUALS
-
-    }
+    Relation[] value() default {};
 
 }

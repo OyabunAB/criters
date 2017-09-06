@@ -29,7 +29,7 @@ import se.oyabun.criters.exception.InvalidCritersTargetException;
 import se.oyabun.criters.test.data.Bar;
 import se.oyabun.criters.test.data.Baz;
 import se.oyabun.criters.test.data.Foo;
-import se.oyabun.criters.test.filter.FooParameterFilter;
+import se.oyabun.criters.test.filter.FooPropertyFilter;
 import se.oyabun.criters.test.filter.FooRelationFilter;
 import se.oyabun.criters.test.filter.InvalidFooFilter;
 
@@ -41,16 +41,23 @@ import java.util.stream.Collectors;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+/**
+ * Criters abstract JPA tests written to be reused with all compatible JPA implementations
+ * for verification of compliance.
+ *
+ * @author Daniel Sundberg
+ */
 @RunWith(JUnit4.class)
 public abstract class CritersTest {
 
     private static final Integer TEST_VALUE = 2;
     private static final Integer OTHER_VALUE = 1234;
+    private static final String BAZ_VALUE = "value";
 
     private EntityManager entityManager;
 
     private Baz baz;
-    private Foo foo, footoo;
+    private Foo foo, fooToo;
     private Bar bar;
 
     private CritersFactory<Foo, Filter<Foo>> critersFactory;
@@ -74,14 +81,14 @@ public abstract class CritersTest {
     /**
      * This can be overridden by extending classes to change init method
      */
-    CritersFactory<Foo, Filter<Foo>> generateCritersFactory()
+    private CritersFactory<Foo, Filter<Foo>> generateCritersFactory()
             throws CritersException {
 
         return Criters.<Foo, Filter<Foo>> factory().use(entityManager);
 
     }
 
-    void prepareData(final EntityManager entityManager) {
+    private void prepareData(final EntityManager entityManager) {
 
         //
         // Prepare data in entityManager
@@ -94,14 +101,17 @@ public abstract class CritersTest {
 
         bar = new Bar();
         bar.setFoo(foo);
+        foo.getBars().add(bar);
         entityManager.persist(bar);
 
-        footoo = new Foo();
-        footoo.setValue(OTHER_VALUE);
-        entityManager.persist(footoo);
+        fooToo = new Foo();
+        fooToo.setValue(OTHER_VALUE);
+        entityManager.persist(fooToo);
 
         baz = new Baz();
+        baz.setValue(BAZ_VALUE);
         baz.setBar(bar);
+        bar.setBaz(baz);
         entityManager.persist(baz);
 
         entityManager.flush();
@@ -113,7 +123,6 @@ public abstract class CritersTest {
 
         assertThat(critersFactory.isSearchable(Foo.class), is(true));
 
-
     }
 
     @Test
@@ -121,12 +130,9 @@ public abstract class CritersTest {
             throws CritersSearchCriteriaException,
                    InvalidCritersTargetException {
 
-        final FooParameterFilter fooParameterCriteria = new FooParameterFilter();
-        fooParameterCriteria.setValue(TEST_VALUE);
-
         final List<Foo> testEntities =
                 entityManager.createQuery(
-                        critersFactory.prepare(fooParameterCriteria)
+                        critersFactory.prepare(new FooPropertyFilter(TEST_VALUE))
                                       .build().criteria())
                              .getResultStream()
                              .collect(Collectors.toList());
@@ -154,11 +160,8 @@ public abstract class CritersTest {
             throws InvalidCritersTargetException,
                    CritersSearchCriteriaException {
 
-        final FooParameterFilter propertyFilter = new FooParameterFilter();
-        propertyFilter.setValue(TEST_VALUE);
-
         entityManager.createQuery(
-                critersFactory.prepare(propertyFilter)
+                critersFactory.prepare(new FooPropertyFilter(TEST_VALUE))
                               .build().criteria()).getSingleResult();
 
     }
@@ -169,9 +172,8 @@ public abstract class CritersTest {
                    CritersSearchCriteriaException {
 
         entityManager.createQuery(
-                critersFactory.prepare(new FooRelationFilter(bar.getId()))
-                              .build()
-                              .criteria()).getSingleResult();
+                critersFactory.prepare(new FooRelationFilter(bar.getId(), BAZ_VALUE))
+                              .build().criteria()).getSingleResult();
 
     }
 
@@ -181,6 +183,7 @@ public abstract class CritersTest {
         if(entityManager != null) {
 
             entityManager.getTransaction().rollback();
+
         }
 
     }

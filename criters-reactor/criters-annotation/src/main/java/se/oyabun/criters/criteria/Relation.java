@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.oyabun.criters.test.spring;
+package se.oyabun.criters.criteria;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
-import se.oyabun.criters.test.data.Foo;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import javax.transaction.Transactional;
 
 /**
- * Foo repository for testing spring data repositories
+ * Filtering relation annotation, used on non-basic type relations.
  *
  * @author Daniel Sundberg
  */
-@Transactional @Repository
-public interface FooRepository
-        extends JpaRepository<Foo, Long>,
-                JpaSpecificationExecutor<Foo> {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Relation {
+
+    String name();
+
+    boolean iterable() default false;
+
+    Parameter[] parameters() default {};
 
 }

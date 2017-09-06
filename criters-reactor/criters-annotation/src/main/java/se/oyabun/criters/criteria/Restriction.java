@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.oyabun.criters.test.spring;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
-import se.oyabun.criters.test.data.Foo;
-
-import javax.transaction.Transactional;
+package se.oyabun.criters.criteria;
 
 /**
- * Foo repository for testing spring data repositories
- *
- * @author Daniel Sundberg
+ * Relations type definition
  */
-@Transactional @Repository
-public interface FooRepository
-        extends JpaRepository<Foo, Long>,
-                JpaSpecificationExecutor<Foo> {
+public enum Restriction {
+
+    EQUALS,
+    NOT_EQUALS,
+    GREATER_THAN,
+    GREATER_THAN_OR_EQUALS,
+    LESS_THAN,
+    LESS_THAN_OR_EQUALS
 
 }

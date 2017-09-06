@@ -18,14 +18,21 @@ package se.oyabun.criters.util;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.oyabun.criters.criteria.Combination;
 import se.oyabun.criters.criteria.Filter;
-import se.oyabun.criters.criteria.ParameterFilter;
-import se.oyabun.criters.criteria.RelationFilter;
+import se.oyabun.criters.criteria.Parameter;
+import se.oyabun.criters.criteria.Relation;
+import se.oyabun.criters.criteria.Relations;
 import se.oyabun.criters.exception.InvalidCritersFilteringException;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,7 +46,19 @@ public class FilterUtil {
     private static final Logger logger = LoggerFactory.getLogger(FilterUtil.class);
 
     private static final String GETTER_PREFIX = "get";
-    
+
+    private static final String VALIDATION_TRACE_MESSAGE = "Validated '{}' method on '{}'.";
+
+    private static final String ILLEGAL_COMBINATION = "Illegal combination.";
+
+    private static final String MISMATCHING_GETTERS = "No matching getter method '%s.%s()' for filter." ;
+
+    private static final String NON_PREPARED_METHOD = "Method '%s' not indicated as prepared.";
+
+    private static final String MISMATCHING_RETURN_TYPE = "Return type '%s' not matching target.";
+
+    private static final String INVALID_ITERABLE = "Indicated collection '%s' not valid iterable.";
+
     /**
      * Introspect criteria for get methods with parameter annotations.
      *
@@ -51,7 +70,7 @@ public class FilterUtil {
     public static <E, S extends Filter<E>> Collection<Method> parameterMethods(final S searchCriteria) {
 
         return Arrays.stream(searchCriteria.getClass().getDeclaredMethods())
-                     .filter(method -> method.isAnnotationPresent(ParameterFilter.class))
+                     .filter(method -> method.isAnnotationPresent(Parameter.class))
                      .filter(method -> method.getParameterCount() == 0)
                      .collect(Collectors.toList());
 
@@ -68,7 +87,7 @@ public class FilterUtil {
     public static <E, S extends Filter<E>> Collection<Method> relationalMethods(final S searchCriteria) {
 
         return Arrays.stream(searchCriteria.getClass().getDeclaredMethods())
-                     .filter(method -> method.isAnnotationPresent(RelationFilter.class))
+                     .filter(method -> method.isAnnotationPresent(Relations.class))
                      .filter(method -> method.getParameterCount() == 0)
                      .collect(Collectors.toList());
 
@@ -82,150 +101,262 @@ public class FilterUtil {
      * @param <E> target type
      * @throws InvalidCritersFilteringException indicating issues with matching
      */
-    public static <E> void validatePropertyParameter(final Method searchCriteriaMethod,
-                                                     final Class<E> type)
+    public static <E> void validateParameter(final Method searchCriteriaMethod,
+                                             final String parameterName,
+                                             final Class<E> type)
             throws InvalidCritersFilteringException {
 
-        if(searchCriteriaMethod.isAnnotationPresent(ParameterFilter.class)) {
+        if(searchCriteriaMethod.isAnnotationPresent(Parameter.class)) {
 
-            Optional<Method> optionalTargetMethod =
-                    Arrays.stream(type.getMethods())
-                          .filter(method ->
-                                  method.getName()
-                                        .equals(searchCriteriaMethod.getName()))
-                  .findFirst();
-
-            if(optionalTargetMethod.isPresent()) {
-
-                Method targetMethod = optionalTargetMethod.get();
-
-                if(targetMethod.getReturnType().equals(searchCriteriaMethod.getReturnType())) {
-
-                    if(logger.isTraceEnabled()) {
-
-                        logger.trace("Validated " + searchCriteriaMethod.getName() + ".");
-
-                    }
-
-                } else {
-
-                    throw new InvalidCritersFilteringException(
-                            "Return type " + searchCriteriaMethod.getReturnType() +
-                            " not matching target.");
-
-                }
-
-            } else {
-
-                throw new InvalidCritersFilteringException(
-                        "No matching getter method for " + searchCriteriaMethod.getName() +
-                        " on type " + type.getSimpleName() + " found.");
-
-            }
+            validateRelationalParameter(getterOf(parameterName),
+                                        searchCriteriaMethod.getReturnType(),
+                                        type);
 
         } else {
 
             throw new InvalidCritersFilteringException(
-                    "Method " + searchCriteriaMethod.getName() +
-                    " not indicated as prepare parameter.");
-        }
+                    String.format(NON_PREPARED_METHOD,
+                                  searchCriteriaMethod.getName()));
 
+        }
 
     }
 
     /**
      * Validate method is corresponding to similar on target type
      *
-     * @param searchCriteriaMethod which should match target type
+     * @param method which should match target type
      * @param type on which getter should match
-     * @param <E> target type
      * @throws InvalidCritersFilteringException indicating issues with matching
      */
-    public static < E > void validatePropertyRelation(final Method searchCriteriaMethod,
-                                                      final Class<E> type)
+    public static void validateRelations(final Method method,
+                                         final Class<?> type)
             throws InvalidCritersFilteringException {
 
-        if(searchCriteriaMethod.isAnnotationPresent(RelationFilter.class)) {
+        //
+        // Assert that there exists an relations annotation
+        //
+        if(method.isAnnotationPresent(Relations.class)) {
 
-            final RelationFilter filterRelation = searchCriteriaMethod.getDeclaredAnnotation(RelationFilter.class);
+            final Relations relations = method.getDeclaredAnnotation(Relations.class);
 
-            final Optional<Method> optionalTargetMethod =
-                    Arrays.stream(type.getMethods())
-                          .filter(method -> method.getName().equals(
-                                  GETTER_PREFIX + StringUtils.capitalize(
-                                          filterRelation.sourceParameterName())))
+            Class<?> currentType = null;
+
+            //
+            // Iterate all relation on parent annotation, each iteration representing a join on
+            // the previous starting with the initial type as root.
+            //
+            for(final Relation relation : relations.value()) {
+
+                final String expectedMethodName = getterOf(relation.name());
+
+                final Optional<Method> optionalTargetMethod =
+                        Arrays.stream(Objects.nonNull(currentType) ?
+                                      currentType.getMethods() :
+                                      type.getMethods())
+                              .filter(typeMethod -> typeMethod.getName().equals(getterOf(relation.name())))
                           .findFirst();
 
-            if(optionalTargetMethod.isPresent()) {
+                if(optionalTargetMethod.isPresent()) {
 
-                final String getterMethodName =
-                        GETTER_PREFIX + StringUtils.capitalize(
-                                filterRelation.relationTargetParameter());
+                    final Method targetMethod = optionalTargetMethod.get();
 
-                final Method targetMethod = optionalTargetMethod.get();
-                Class targetClass = targetMethod.getReturnType();
+                    //
+                    // Validate getters for each parameter
+                    //
+                    for(final Parameter parameter : relation.parameters()) {
 
-                if(filterRelation.relationSourceCollection() &&
-                   Iterable.class.isAssignableFrom(targetClass)) {
+                        Class<?> targetType = targetMethod.getReturnType();
 
-                    targetClass = filterRelation.relationTargetType();
+                        if(Iterable.class.isAssignableFrom(targetType)) {
 
-                } else {
+                            Type returnType = targetMethod.getGenericReturnType();
 
-                    throw new InvalidCritersFilteringException(
-                            "Indicated collection '" + targetClass.getSimpleName() + "' not valid iterable.");
+                            if (returnType instanceof ParameterizedType) {
 
-                }
+                                final ParameterizedType paramType = (ParameterizedType) returnType;
+                                targetType = (Class<?>) paramType.getActualTypeArguments()[ 0 ];
 
-                final Optional<Method> optionalTargetRelationParameterMethod =
-                        Arrays.stream(targetClass.getDeclaredMethods())
-                              .filter(method -> method.getName().equals(getterMethodName))
-                              .findFirst();
-
-                if(optionalTargetRelationParameterMethod.isPresent()) {
-
-                    final Method targetRelationParameterMethod = optionalTargetRelationParameterMethod.get();
-
-                    if(targetRelationParameterMethod.getReturnType().equals(searchCriteriaMethod.getReturnType())) {
-
-                        if(logger.isTraceEnabled()) {
-
-                            logger.trace("Validated " + searchCriteriaMethod.getName() + ".");
+                            }
 
                         }
 
-                    } else {
-
-                        throw new InvalidCritersFilteringException(
-                                "Return type " + searchCriteriaMethod.getReturnType() +
-                                " not matching target.");
+                        validateRelationalParameter(getterOf(parameter.name()),
+                                                    method.getReturnType(),
+                                                    targetType);
 
                     }
+
+                    currentType = extractTargetType(relation, targetMethod);
 
                 } else {
 
                     throw new InvalidCritersFilteringException(
-                            "Failed to identify filtering method '" + getterMethodName +
-                            "' on relational object '"+targetClass.getSimpleName()+"'.");
+                            String.format(MISMATCHING_GETTERS,
+                                          type.getSimpleName(),
+                                          expectedMethodName));
 
                 }
-
-            } else {
-
-                throw new InvalidCritersFilteringException(
-                        "No matching getter method for " + searchCriteriaMethod.getName() +
-                        " on type " + type.getSimpleName() + " found.");
 
             }
 
         } else {
 
             throw new InvalidCritersFilteringException(
-                    "Method " + searchCriteriaMethod.getName() +
-                    " not indicated as prepare relation.");
+                    String.format(NON_PREPARED_METHOD,
+                                  method.getName()));
 
         }
 
+
+    }
+
+    /**
+     * Validating relational parameter expectations on given type
+     *
+     * @param expectedMethodName verified against method on given type
+     * @param expectedReturnType verified against method on given type
+     * @param type to verify methods on
+     * @param <E> inferred type of class
+     * @throws InvalidCritersFilteringException if validation fails
+     */
+    private static <E> void validateRelationalParameter(final String expectedMethodName,
+                                                        final Class<?> expectedReturnType,
+                                                        final Class<E> type)
+            throws InvalidCritersFilteringException {
+
+        Optional<Method> optionalTargetMethod =
+                Arrays.stream(type.getMethods())
+                      .filter(method -> method.getName().equals(expectedMethodName))
+                      .filter(method -> method.getReturnType().equals(expectedReturnType))
+                      .findFirst();
+
+        if(optionalTargetMethod.isPresent()) {
+
+            final Method targetMethod = optionalTargetMethod.get();
+
+            if(targetMethod.getReturnType().equals(expectedReturnType)) {
+
+                if(logger.isTraceEnabled()) {
+
+                    logger.trace(VALIDATION_TRACE_MESSAGE,
+                                 expectedMethodName,
+                                 type.getSimpleName());
+
+                }
+
+            } else {
+
+                throw new InvalidCritersFilteringException(
+                        String.format(MISMATCHING_RETURN_TYPE,
+                                      expectedReturnType.getSimpleName()));
+
+            }
+
+        } else {
+
+            throw new InvalidCritersFilteringException(
+                    String.format(MISMATCHING_GETTERS,
+                                  type.getSimpleName(),
+                                  expectedMethodName));
+
+        }
+
+    }
+
+    /**
+     * Extract target class type
+     *
+     * @param relation of method
+     * @param targetMethod to be called
+     * @return class type returned from method call
+     * @throws InvalidCritersFilteringException if relations iterable indication is wrong
+     */
+    private static Class<?> extractTargetType(final Relation relation,
+                                              final Method targetMethod)
+            throws InvalidCritersFilteringException {
+
+        Class<?> currentType = targetMethod.getReturnType();
+
+        boolean indicationFail = false;
+
+        if(relation.iterable()) {
+
+            if(Iterable.class.isAssignableFrom(currentType)) {
+
+                Type returnType = targetMethod.getGenericReturnType();
+
+                if (returnType instanceof ParameterizedType) {
+
+                    final ParameterizedType paramType = (ParameterizedType) returnType;
+                    currentType = (Class<?>) paramType.getActualTypeArguments()[ 0 ];
+
+                }
+
+            } else {
+
+                indicationFail = true;
+
+            }
+
+        } else {
+
+            if(Iterable.class.isAssignableFrom(currentType)) {
+
+                indicationFail = true;
+
+            }
+
+        }
+
+        if(indicationFail) {
+
+            throw new InvalidCritersFilteringException(
+                    String.format(INVALID_ITERABLE,
+                                  currentType.getSimpleName()));
+
+        }
+
+        return currentType;
+
+    }
+
+    /**
+     * Combine predicates with given criteria builder based on combination logic.
+     *
+     * @param combination of parameter
+     * @param criteriaBuilder to combine with
+     * @param firstPredicate to combine
+     * @param secondPredicate to combine
+     * @return combinated predicates
+     */
+    public static Predicate combine(final Combination.Combine combination,
+                                    final CriteriaBuilder criteriaBuilder,
+                                    final Predicate firstPredicate,
+                                    final Predicate secondPredicate) {
+
+        switch (combination) {
+
+            case OR: return criteriaBuilder.or(firstPredicate, secondPredicate);
+
+            case AND: return criteriaBuilder.and(firstPredicate, secondPredicate);
+
+        }
+
+        throw new IllegalStateException(ILLEGAL_COMBINATION);
+
+    }
+
+    /**
+     * Implements getter convention.
+     * Parameters are expected to follow the getParameterName() convention.
+     *
+     * @param propertName to produce convention get method name for
+     * @return conventional getter method name for property
+     */
+    private static String getterOf(final String propertName) {
+
+        return GETTER_PREFIX + StringUtils.capitalize(propertName);
 
     }
 

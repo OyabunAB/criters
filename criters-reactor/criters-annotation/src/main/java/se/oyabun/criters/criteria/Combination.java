@@ -21,28 +21,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Filtering relation annotation, used on non-basic type relations.
+ * Combinator controlling annotation
  *
  * @author Daniel Sundberg
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RelationFilter {
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Combination {
 
-    Restriction restriction() default Restriction.IN;
+    String group() default "";
 
-    String sourceParameterName();
+    Combine combine() default Combine.AND;
 
-    boolean relationSourceCollection() default false;
+    enum Combine {
 
-    String relationTargetParameter();
-
-    Class relationTargetType();
-
-    enum Restriction {
-
-        IN,
-        NOT_IN
+        AND, OR
 
     }
 

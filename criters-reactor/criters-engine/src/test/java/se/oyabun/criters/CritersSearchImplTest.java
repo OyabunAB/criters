@@ -31,12 +31,19 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Arrays;
+import java.util.Optional;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.validateMockitoUsage;
 import static org.mockito.Mockito.when;
 
-
+/**
+ * Criters search implementation verification tests
+ *
+ * @author Daniel Sundberg
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class CritersSearchImplTest {
 
@@ -53,6 +60,7 @@ public class CritersSearchImplTest {
 
     @Mock
     private Filter<Foo> filterMock;
+
 
     @Mock
     private ParameterExtractor parameterExtractorMock;
@@ -73,8 +81,7 @@ public class CritersSearchImplTest {
                         rootMock,
                         filterMock);
 
-        this.critersSearch.using(relationExtractorMock);
-        this.critersSearch.using(parameterExtractorMock);
+        this.critersSearch.using(Arrays.asList(parameterExtractorMock, relationExtractorMock));
 
     }
 
@@ -101,16 +108,19 @@ public class CritersSearchImplTest {
     public void prepareRestrictionExpectations()
             throws InvalidCritersFilteringException {
 
+        when(criteriaBuilderMock.and(any(Predicate.class),
+                                     any(Predicate.class)))
+                .thenReturn(predicateMock);
+
         when(parameterExtractorMock.generatePredicate(isA(Filter.class),
                                                       isA(CriteriaBuilder.class),
                                                       isA(Root.class)))
-                .thenReturn(predicateMock);
+                .thenReturn(Optional.of(predicateMock));
 
         when(relationExtractorMock.generatePredicate(isA(Filter.class),
                                                      isA(CriteriaBuilder.class),
                                                      isA(Root.class)))
-                .thenReturn(predicateMock);
-
+                .thenReturn(Optional.of(predicateMock));
 
     }
 

@@ -15,15 +15,19 @@
  */
 package se.oyabun.criters;
 
+import se.oyabun.criters.criteria.Combination;
 import se.oyabun.criters.criteria.Filter;
 import se.oyabun.criters.exception.InvalidCritersFilteringException;
+import se.oyabun.criters.extraction.Extractor;
 import se.oyabun.criters.extraction.ParameterExtractor;
 import se.oyabun.criters.extraction.RelationExtractor;
+import se.oyabun.criters.util.FilterUtil;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -42,8 +46,9 @@ public class CritersSearchImpl<E, S extends Filter<E>>
     private final CriteriaQuery<E> criteriaQuery;
     private final Root<E> root;
 
-    private ParameterExtractor parameterExtractor = new ParameterExtractor();
-    private RelationExtractor relationExtractor = new RelationExtractor();
+    private Iterable<Extractor> extractors =
+            Arrays.asList(new ParameterExtractor(),
+                          new RelationExtractor());
 
     private Predicate finalRestrictions;
 
@@ -56,17 +61,17 @@ public class CritersSearchImpl<E, S extends Filter<E>>
         this.criteriaQuery = criteriaQuery;
         this.root = root;
         this.searchCriteria = searchCriteria;
-    }
-
-    void using(final ParameterExtractor parameterExtractor) {
-
-        this.parameterExtractor = parameterExtractor;
 
     }
 
-    void using(final RelationExtractor relationExtractor) {
+    /**
+     * Configure current instance extractors to be used for extracting predicates
+     *
+     * @param extractors to be used for restrictions
+     */
+    void using(final Iterable<Extractor> extractors) {
 
-        this.relationExtractor = relationExtractor;
+        this.extractors = extractors;
 
     }
 
@@ -88,24 +93,31 @@ public class CritersSearchImpl<E, S extends Filter<E>>
     public Predicate restrictions()
             throws InvalidCritersFilteringException {
 
-        final Predicate propertyRestrictions = parameterExtractor.generatePredicate(searchCriteria,
-                                                                                    criteriaBuilder,
-                                                                                    root);
+        for(final Extractor extractor : extractors) {
 
-        final Predicate relationRestrictions = relationExtractor.generatePredicate(searchCriteria,
-                                                                                   criteriaBuilder,
-                                                                                   root);
+            extractor.generatePredicate(searchCriteria, criteriaBuilder, root)
+                     .ifPresent(this::addPredicate);
 
-        finalRestrictions =
-                Objects.nonNull(propertyRestrictions) &&
-                Objects.nonNull(relationRestrictions) ?
-                    criteriaBuilder.and(propertyRestrictions, relationRestrictions) :
-                    Objects.nonNull(propertyRestrictions) ?
-                        propertyRestrictions :
-                        Optional.ofNullable(relationRestrictions)
-                                .orElseThrow(IllegalStateException::new);
+        }
 
-        return finalRestrictions;
+        return Optional.ofNullable(finalRestrictions)
+                       .orElseThrow(() -> new IllegalStateException("No predicates generated."));
+
+    }
+
+    /**
+     * Combine all predicates we have, starting with non null predicate
+     *
+     * @param predicate to be combined with final restrictions
+     */
+    private void addPredicate(final Predicate predicate) {
+
+        finalRestrictions = Objects.isNull(finalRestrictions) ?
+                            predicate :
+                            FilterUtil.combine(Combination.Combine.AND,
+                                               criteriaBuilder,
+                                               finalRestrictions,
+                                               predicate);
 
     }
 

@@ -6,11 +6,9 @@
       VMMMP" dMP dMP dMP    dMP   dMMMMMP dMP dMP  VMMMP"
     --------------------------------------------------------------------------------------------------- 
 ---
-# Criters Criteria Automation Engine
-
+# Criters Criteria Automation Engine [![Build Status](https://jenkins.oyabun.se/buildStatus/icon?job=OyabunAB/criters/development)](https://jenkins.oyabun.se/job/OyabunAB/criters/master)
 ### Configuration
-
-#### Search criteria configuration
+#### Search filter configuration
 
     <dependency>
         <groupId>se.oyabun.criters</groupId>
@@ -27,22 +25,23 @@ Annotate your filter objects with the criters filter annotations.
         //
         // Use direct parameter restrictions on the entity
         //
-        @ParameterFilter(restriction = Restriction.EQUALS,
-                         sourceParameterName ="value")
+        @Parameter(name ="value",
+                   restriction = Restriction.EQUALS)
         public Integer getValue() { return 0; }
-      
         //
         // or via a relational property restriction
         //
-        @RelationFilter(restriction = Restriction.IN,
-                        sourceParameterName = "bars",
-                        relationSourceCollection = true,
-                        relationTargetType = Bar.class,
-                        relationTargetParameter = "id")
+        @Relations({
+            @Relation(name="bars",
+                      iterable = true,
+                      parameters = {
+                @Parameter(name = "id",
+                           restriction = Restriction.EQUALS)
+            })
+        })
         public long getBarId() { return 0L; }
     }
 ```
-
 #### Engine configuration
 
     <dependency>
@@ -51,20 +50,18 @@ Annotate your filter objects with the criters filter annotations.
         <version>${criters-engine.version}</version>
     </dependency>
     
-Use the conveniet _Criters_ factory builder to instantiate your criters factory.
+Use the convenient _Criters_ factory builder to instantiate your criters factory.
 You then need to configure the factory to use an entity manager or a root, criteria query and criteria builder.     
 ```java  
     //
     // Either configure an entity manager
     //
     Criters.<Foo, Filter<Foo>> factory().use(entityManager);
-    
     //
     // or with the root, criteria query and criteria builder directly
     //
     Criters.<Foo, Filter<Foo>> factory().use(root, criteriaQuery, criteriaBuilder);
-```
-    
+``` 
 #### Spring Data JPA
 
     <dependency>
@@ -73,7 +70,7 @@ You then need to configure the factory to use an entity manager or a root, crite
         <version>${criters-engine.version}</version>
     </dependency>
 
-Annotate your filter object the regular way and let your specifications extend _CritersSpecification<?>.
+Annotate your filter object the regular way and let your specifications extend _CritersSpecification<E, F extends Filter\<E\>>_.
 ```java
    public class FooSpecification
            extends CritersSpecification<Foo, Filter<Foo>> {

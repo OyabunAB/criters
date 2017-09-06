@@ -16,10 +16,9 @@
 package se.oyabun.criters.test.filter;
 
 import se.oyabun.criters.criteria.Filter;
-import se.oyabun.criters.criteria.ParameterFilter;
+import se.oyabun.criters.criteria.Parameter;
+import se.oyabun.criters.criteria.Restriction;
 import se.oyabun.criters.test.data.Foo;
-
-import static se.oyabun.criters.criteria.ParameterFilter.Restriction;
 
 /**
  * Intentionally invalid Foo typed filter.
@@ -35,8 +34,8 @@ public class InvalidFooFilter
      * Getter references non-existing value on Foo
      * @return wrong type, non existing fieldname
      */
-    @ParameterFilter(restriction = Restriction.EQUALS,
-                     sourceParameterName ="invalidValue")
+    @Parameter(restriction = Restriction.EQUALS,
+               name ="invalidValue")
     public Long getInvalidValue() {
 
         return invalidValue;

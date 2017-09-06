@@ -24,12 +24,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+/**
+ * Test entity Baz
+ * Neutrally compliant with javax persistence API to enable reuse for different implementations
+ *
+ * @author Daniel Sundberg
+ */
 @Entity
 public class Baz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    private String value;
 
     @OneToOne
     private Bar bar;
@@ -56,8 +64,18 @@ public class Baz {
 
     }
 
+    public String getValue() {
+
+        return value;
+    }
+
+    public void setValue(final String value) {
+
+        this.value = value;
+    }
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
 
         if (this == o) {
             return true;
@@ -67,21 +85,18 @@ public class Baz {
             return false;
         }
 
-        Baz baz = (Baz) o;
+        final Baz baz = (Baz) o;
 
-        return new EqualsBuilder()
-                .append(id, baz.id)
-                .isEquals();
-
+        return new EqualsBuilder().append(id,
+                                          baz.id)
+                                  .isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder(17,37)
-                .append(id)
-                .toHashCode();
-
+        return new HashCodeBuilder(17,
+                                   37).append(id)
+                                      .toHashCode();
     }
-
 }

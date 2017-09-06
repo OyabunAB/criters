@@ -13,23 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.oyabun.criters.test.spring;
+package se.oyabun.criters.test.filter;
 
 import se.oyabun.criters.criteria.Filter;
-import se.oyabun.criters.spring.CritersSpecification;
+import se.oyabun.criters.criteria.Parameter;
+import se.oyabun.criters.criteria.Restriction;
 import se.oyabun.criters.test.data.Foo;
 
 /**
- * Foo typed specification connecting filters with specification executors.
+ * Parameter restricting Foo typed filter.
  *
  * @author Daniel Sundberg
  */
-public class FooSpecification
-        extends CritersSpecification<Foo, Filter<Foo>> {
+public class FooPropertyFilter
+        extends Filter<Foo> {
 
-    public FooSpecification(final Filter<Foo> searchFilter) {
+    private Integer value;
 
-        super(searchFilter);
+    public FooPropertyFilter(final Integer value) {
+
+        this.value = value;
+
+    }
+
+    @Parameter(restriction = Restriction.EQUALS,
+               name ="value")
+    public Integer getValue() {
+
+        return value;
+
+    }
+
+    public void setValue(Integer value) {
+
+        this.value = value;
 
     }
 

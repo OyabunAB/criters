@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 Oyabun AB
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package se.oyabun.criters.util;
 
 import org.junit.Before;
@@ -5,9 +20,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import se.oyabun.criters.criteria.Filter;
-import se.oyabun.criters.criteria.ParameterFilter;
-import se.oyabun.criters.criteria.RelationFilter;
-import se.oyabun.criters.test.data.Bar;
+import se.oyabun.criters.criteria.Parameter;
+import se.oyabun.criters.criteria.Relation;
+import se.oyabun.criters.criteria.Relations;
+import se.oyabun.criters.criteria.Restriction;
 import se.oyabun.criters.test.data.Foo;
 
 import java.lang.reflect.Method;
@@ -18,6 +34,11 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+/**
+ * Filter utility functionality verification
+ *
+ * @author Daniel Sundberg
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class FilterUtilTest {
 
@@ -67,16 +88,20 @@ public class FilterUtilTest {
     public class TestFilter
            extends Filter<Foo> {
 
-        @ParameterFilter(restriction = ParameterFilter.Restriction.EQUALS,
-                         sourceParameterName = SOURCE_PARAMETER)
+        @Parameter(restriction = Restriction.EQUALS,
+                   name = SOURCE_PARAMETER)
         public String getAnnotatedParameterMethod() {
             return VALUE;
         }
 
-        @RelationFilter(restriction = RelationFilter.Restriction.IN,
-                        sourceParameterName = SOURCE_PARAMETER,
-                        relationTargetParameter = TARGET_PARAMETER,
-                        relationTargetType = Bar.class)
+        @Relations({
+                @Relation(name = SOURCE_PARAMETER,
+                          iterable = true,
+                          parameters = {
+                            @Parameter(name = TARGET_PARAMETER,
+                                       restriction = Restriction.EQUALS)
+                          })
+        })
         public String getAnnotatedRelationalMethod() {
             return VALUE;
         }

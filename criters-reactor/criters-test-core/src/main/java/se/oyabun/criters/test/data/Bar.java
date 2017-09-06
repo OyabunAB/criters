@@ -23,7 +23,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
+/**
+ * Test entity Bar
+ * Neutrally compliant with javax persistence API to enable reuse for different implementations
+ *
+ * @author Daniel Sundberg
+ */
 @Entity
 public class Bar {
 
@@ -33,6 +40,9 @@ public class Bar {
 
     @ManyToOne
     private Foo foo;
+
+    @OneToOne
+    private Baz baz;
 
 
     public long getId() {
@@ -54,12 +64,22 @@ public class Bar {
     public void setFoo(Foo foo) {
 
         this.foo = foo;
-        this.foo.getBars().add(this);
+
+    }
+
+    public Baz getBaz() {
+
+        return baz;
+    }
+
+    public void setBaz(final Baz baz) {
+
+        this.baz = baz;
 
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
 
         if (this == o) {
             return true;
@@ -69,22 +89,18 @@ public class Bar {
             return false;
         }
 
-        Bar bar = (Bar) o;
+        final Bar bar = (Bar) o;
 
-        return new EqualsBuilder()
-                .append(id, bar.id)
-                .append(foo, bar.foo)
-                .isEquals();
+        return new EqualsBuilder().append(id,
+                                          bar.id)
+                                  .isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder(17,37)
-                .append(id)
-                .append(foo)
-                .toHashCode();
-
+        return new HashCodeBuilder(17,
+                                   37).append(id)
+                                      .toHashCode();
     }
-
 }

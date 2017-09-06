@@ -26,6 +26,12 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Test entity Foo
+ * Neutrally compliant with javax persistence API to enable reuse for different implementations
+ *
+ * @author Daniel Sundberg
+ */
 @Entity
 public class Foo{
 
@@ -73,7 +79,7 @@ public class Foo{
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
 
         if (this == o) {
             return true;
@@ -83,21 +89,24 @@ public class Foo{
             return false;
         }
 
-        Foo that = (Foo) o;
+        final Foo foo = (Foo) o;
 
-        return new EqualsBuilder()
-                .append(id, that.id)
-                .isEquals();
-
+        return new EqualsBuilder().append(id,
+                                          foo.id)
+                                  .append(value,
+                                          foo.value)
+                                  .append(bars,
+                                          foo.bars)
+                                  .isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder(17,37)
-                .append(id)
-                .toHashCode();
-
+        return new HashCodeBuilder(17,
+                                   37).append(id)
+                                      .append(value)
+                                      .append(bars)
+                                      .toHashCode();
     }
-
 }

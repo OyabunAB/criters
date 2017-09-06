@@ -11,8 +11,8 @@
         <properties>
 
             <!-- Common properties -->
-            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:test" />
+            <property name="javax.persistence.jdbc.driver" value="com.p6spy.engine.spy.P6SpyDriver" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:p6spy:h2:mem:test" />
             <property name="javax.persistence.jdbc.user" value="sa" />
             <property name="javax.persistence.jdbc.password" value="" />
 

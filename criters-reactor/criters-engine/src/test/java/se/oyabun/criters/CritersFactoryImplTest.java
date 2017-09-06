@@ -22,7 +22,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import se.oyabun.criters.criteria.Filter;
-import se.oyabun.criters.criteria.ParameterFilter;
+import se.oyabun.criters.criteria.Parameter;
+import se.oyabun.criters.criteria.Restriction;
 import se.oyabun.criters.exception.InvalidCritersTargetException;
 import se.oyabun.criters.test.data.Foo;
 
@@ -32,7 +33,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
-
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -40,6 +40,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.validateMockitoUsage;
 import static org.mockito.Mockito.when;
 
+/**
+ * Criters factory verjfication tests
+ *
+ * @author Daniel Sundberg
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class CritersFactoryImplTest {
 
@@ -68,14 +73,14 @@ public class CritersFactoryImplTest {
 
     private Filter<Foo> filterStubb = new Filter<Foo>() {
 
-        @ParameterFilter(restriction = ParameterFilter.Restriction.EQUALS,
-                         sourceParameterName = "value")
+        @Parameter(restriction = Restriction.EQUALS,
+                   name = "value")
         public Integer equalsValue() {
             return EQUALS_VALUE;
         }
 
-        @ParameterFilter(restriction = ParameterFilter.Restriction.NOT_EQUALS,
-                         sourceParameterName = "value")
+        @Parameter(restriction = Restriction.NOT_EQUALS,
+                   name = "value")
         public Integer notEquals() {
             return NOT_EQUALS_VALUE;
         }
@@ -130,7 +135,7 @@ public class CritersFactoryImplTest {
 
     }
 
-    void expectEntityManager() {
+    private void expectEntityManager() {
 
         when(entityManagerMock.getMetamodel()).thenReturn(metamodelMock);
         when(metamodelMock.getEntities()).thenReturn(Collections.singleton(entityTypeMock));
@@ -138,7 +143,7 @@ public class CritersFactoryImplTest {
 
     }
 
-    void expectComponents() {
+    private void expectComponents() {
 
         when(rootMock.getModel()).thenReturn(entityTypeMock);
         when(entityTypeMock.getJavaType()).thenReturn(Foo.class);

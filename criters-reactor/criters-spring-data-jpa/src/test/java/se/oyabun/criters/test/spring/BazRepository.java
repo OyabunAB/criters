@@ -13,36 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.oyabun.criters.test.filter;
+package se.oyabun.criters.test.spring;
 
-import se.oyabun.criters.criteria.Filter;
-import se.oyabun.criters.criteria.ParameterFilter;
-import se.oyabun.criters.test.data.Foo;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import se.oyabun.criters.test.data.Baz;
 
-import static se.oyabun.criters.criteria.ParameterFilter.Restriction;
+import javax.transaction.Transactional;
 
 /**
- * Parameter restricting Foo typed filter.
+ * Baz repository for testing spring data repositories
  *
  * @author Daniel Sundberg
  */
-public class FooParameterFilter
-        extends Filter<Foo> {
-
-    private Integer value;
-
-    @ParameterFilter(restriction = Restriction.EQUALS,
-                     sourceParameterName ="value")
-    public Integer getValue() {
-
-        return value;
-
-    }
-
-    public void setValue(Integer value) {
-
-        this.value = value;
-
-    }
+@Transactional @Repository
+public interface BazRepository
+        extends JpaRepository<Baz, Long> {
 
 }
