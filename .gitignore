@@ -1,3 +1,4 @@
+# Maven build directories and release files
 **/*/target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -7,6 +8,17 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+
+# Gradle build directories and files
+.gradle/
+**/build/
+gradle.properties.local
+
+# IDE
 .DS_Store
 .idea/
 *.iml
+.vscode/
+
+# Claude Code
+.claude
