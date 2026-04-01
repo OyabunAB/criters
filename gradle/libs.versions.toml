@@ -1,0 +1,38 @@
+[versions]
+java = "21"
+jakartaPersistenceApi = "3.1.0"
+hibernateCore = "6.4.4.Final"
+eclipselink = "4.0.2"
+commonsLang3 = "3.4"
+slf4jApi = "1.7.21"
+logbackClassic = "1.1.7"
+junitJupiter = "5.10.2"
+hamcrest = "2.2"
+mockitoCore = "5.11.0"
+h2 = "2.2.224"
+p6spy = "3.9.1"
+springBoot = "3.2.4"
+
+[libraries]
+jakartaPersistenceApi = { module = "jakarta.persistence:jakarta.persistence-api", version.ref = "jakartaPersistenceApi" }
+hibernateCore = { module = "org.hibernate.orm:hibernate-core", version.ref = "hibernateCore" }
+eclipselink = { module = "org.eclipse.persistence:eclipselink", version.ref = "eclipselink" }
+commonsLang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3" }
+slf4jApi = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }
+logbackClassic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackClassic" }
+junitJupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
+hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
+mockitoCore = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockitoJupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockitoCore" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+p6spy = { module = "p6spy:p6spy", version.ref = "p6spy" }
+springDataJpa = { module = "org.springframework.data:spring-data-jpa" }
+springBootStarterDataJpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+springBootStarterTest = { module = "org.springframework.boot:spring-boot-starter-test" }
+springBootDependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "springBoot" }
+
+[bundles]
+testing = ["junitJupiter", "hamcrest", "mockitoCore", "mockitoJupiter", "logbackClassic"]
+
+[plugins]
+springDependencyManagement = { id = "io.spring.dependency-management", version = "1.1.6" }

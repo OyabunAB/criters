@@ -1,4 +1,4 @@
-rootProject.name = "criters-reactor"
+rootProject.name = "criters"
 
 include(
     "criters-annotation",

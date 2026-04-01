@@ -4,26 +4,13 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    id("io.spring.dependency-management") version "1.1.4"
+    alias(libs.plugins.springDependencyManagement)
 }
 
 group = "se.oyabun.criters"
 version = "1.0.2-SNAPSHOT"
 
-// Shared dependency versions
-extra["javaVersion"] = "21"
-extra["jakartaPersistenceApiVersion"] = "3.1.0"
-extra["hibernateCoreVersion"] = "6.4.4.Final"
-extra["eclipselinkVersion"] = "4.0.2"
-extra["commonsLangVersion"] = "3.4"
-extra["slf4jApiVersion"] = "1.7.21"
-extra["logbackClassicVersion"] = "1.1.7"
-extra["junitJupiterVersion"] = "5.10.2"
-extra["hamcrestVersion"] = "2.2"
-extra["mockitoCoreVersion"] = "5.11.0"
-extra["h2Version"] = "2.2.224"
-extra["p6spyVersion"] = "3.9.1"
-extra["springBootVersion"] = "3.2.4"
+val springBootDependenciesBom = libs.springBootDependencies.get().toString()
 
 subprojects {
     apply(plugin = "java-library")
@@ -56,10 +43,9 @@ subprojects {
         useJUnitPlatform()
     }
 
-    val springBootVersion = rootProject.extra["springBootVersion"].toString()
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
+            mavenBom(springBootDependenciesBom)
         }
     }
 
@@ -114,6 +100,14 @@ subprojects {
                 credentials {
                     username = project.findProperty("ossrhUsername")?.toString()
                     password = project.findProperty("ossrhPassword")?.toString()
+                }
+            }
+            maven {
+                name = "github"
+                url = URI("https://maven.pkg.github.com/OyabunAB/criters")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("github.user")?.toString()
+                    password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("github.token")?.toString()
                 }
             }
         }
