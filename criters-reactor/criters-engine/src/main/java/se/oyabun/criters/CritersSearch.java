@@ -17,8 +17,8 @@ package se.oyabun.criters;
 
 import se.oyabun.criters.exception.InvalidCritersFilteringException;
 
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 
 /**
  * Criters search interface providing both a {@link CriteriaQuery} and the ability

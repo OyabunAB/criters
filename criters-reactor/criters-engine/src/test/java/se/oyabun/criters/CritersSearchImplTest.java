@@ -15,28 +15,27 @@
  */
 package se.oyabun.criters;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import se.oyabun.criters.criteria.Filter;
 import se.oyabun.criters.exception.InvalidCritersFilteringException;
 import se.oyabun.criters.extraction.ParameterExtractor;
 import se.oyabun.criters.extraction.RelationExtractor;
 import se.oyabun.criters.test.data.Foo;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.validateMockitoUsage;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,7 +43,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Daniel Sundberg
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CritersSearchImplTest {
 
     private CritersSearchImpl<Foo, Filter<Foo>> critersSearch;
@@ -71,7 +70,7 @@ public class CritersSearchImplTest {
     @Mock
     private Predicate predicateMock;
 
-    @Before
+    @BeforeEach
     public void before() {
 
         this.critersSearch =
@@ -121,13 +120,6 @@ public class CritersSearchImplTest {
                                                      isA(CriteriaBuilder.class),
                                                      isA(Root.class)))
                 .thenReturn(Optional.of(predicateMock));
-
-    }
-
-    @After
-    public void after() {
-
-        validateMockitoUsage();
 
     }
 

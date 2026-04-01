@@ -15,11 +15,11 @@
  */
 package se.oyabun.criters.test;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import se.oyabun.criters.Criters;
 import se.oyabun.criters.CritersFactory;
 import se.oyabun.criters.criteria.Filter;
@@ -33,8 +33,8 @@ import se.oyabun.criters.test.filter.FooPropertyFilter;
 import se.oyabun.criters.test.filter.FooRelationFilter;
 import se.oyabun.criters.test.filter.InvalidFooFilter;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Persistence;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +47,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  * @author Daniel Sundberg
  */
-@RunWith(JUnit4.class)
 public abstract class CritersTest {
 
     private static final Integer TEST_VALUE = 2;
@@ -62,7 +61,7 @@ public abstract class CritersTest {
 
     private CritersFactory<Foo, Filter<Foo>> critersFactory;
 
-    @Before
+    @BeforeEach
     public void before()
             throws CritersException {
 
@@ -142,16 +141,16 @@ public abstract class CritersTest {
 
     }
 
-    @Test(expected = CritersSearchCriteriaException.class)
-    public void testInvalidCritersStream()
-            throws CritersSearchCriteriaException,
-                   InvalidCritersTargetException {
+    @Test
+    public void testInvalidCritersStream() {
 
-        final InvalidFooFilter invalidTestEntityCriteria = new InvalidFooFilter();
-        invalidTestEntityCriteria.setInvalidValue(0L);
+        assertThrows(CritersSearchCriteriaException.class, () -> {
+            final InvalidFooFilter invalidTestEntityCriteria = new InvalidFooFilter();
+            invalidTestEntityCriteria.setInvalidValue(0L);
 
-        critersFactory.prepare(invalidTestEntityCriteria)
-                      .build().criteria();
+            critersFactory.prepare(invalidTestEntityCriteria)
+                          .build().criteria();
+        });
 
     }
 
@@ -177,7 +176,7 @@ public abstract class CritersTest {
 
     }
 
-    @After
+    @AfterEach
     public void after() {
 
         if(entityManager != null) {

@@ -4,31 +4,32 @@ plugins {
     `java-library`
     `maven-publish`
     signing
+    id("io.spring.dependency-management") version "1.1.4"
 }
 
 group = "se.oyabun.criters"
 version = "1.0.2-SNAPSHOT"
 
 // Shared dependency versions
-extra["javaVersion"] = "1.8"
-extra["javaPersistenceApiVersion"] = "2.2"
-extra["hibernateCoreVersion"] = "5.2.10.Final"
-extra["eclipselinkVersion"] = "2.5.2"
+extra["javaVersion"] = "21"
+extra["jakartaPersistenceApiVersion"] = "3.1.0"
+extra["hibernateCoreVersion"] = "6.4.4.Final"
+extra["eclipselinkVersion"] = "4.0.2"
 extra["commonsLangVersion"] = "3.4"
 extra["slf4jApiVersion"] = "1.7.21"
 extra["logbackClassicVersion"] = "1.1.7"
-extra["junitVersion"] = "4.12"
-extra["mockitoVersion"] = "1.10.19"
-extra["hamcrestVersion"] = "1.2.1"
-extra["h2Version"] = "1.4.193"
-extra["p6spyVersion"] = "3.2.0"
-extra["springDataJpaVersion"] = "1.11.6.RELEASE"
-extra["springBootVersion"] = "1.5.6.RELEASE"
+extra["junitJupiterVersion"] = "5.10.2"
+extra["hamcrestVersion"] = "2.2"
+extra["mockitoCoreVersion"] = "5.11.0"
+extra["h2Version"] = "2.2.224"
+extra["p6spyVersion"] = "3.9.1"
+extra["springBootVersion"] = "3.2.4"
 
 subprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
+    apply(plugin = "io.spring.dependency-management")
 
     group = "se.oyabun.criters"
     version = rootProject.version
@@ -38,14 +39,28 @@ subprojects {
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
         withSourcesJar()
         withJavadocJar()
     }
 
     tasks.withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
+    }
+
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
+    }
+
+    val springBootVersion = rootProject.extra["springBootVersion"].toString()
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
+        }
     }
 
     publishing {

@@ -20,7 +20,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import se.oyabun.criters.test.data.Foo;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 /**
  * Foo repository for testing spring data repositories

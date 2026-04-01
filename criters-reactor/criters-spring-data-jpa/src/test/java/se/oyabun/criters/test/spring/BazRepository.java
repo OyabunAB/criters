@@ -19,7 +19,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import se.oyabun.criters.test.data.Baz;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 /**
  * Baz repository for testing spring data repositories

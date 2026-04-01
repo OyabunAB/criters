@@ -41,7 +41,8 @@ public class CritersSQLSnooper
                                 final long elapsed,
                                 final String category,
                                 final String prepared,
-                                final String sql) {
+                                final String sql,
+                                final String url) {
 
         final String singleLineSql = P6Util.singleLine(sql);
 
