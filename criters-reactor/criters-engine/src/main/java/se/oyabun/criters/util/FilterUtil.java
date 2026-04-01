@@ -25,8 +25,8 @@ import se.oyabun.criters.criteria.Relation;
 import se.oyabun.criters.criteria.Relations;
 import se.oyabun.criters.exception.InvalidCritersFilteringException;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

@@ -15,12 +15,12 @@
  */
 package se.oyabun.criters.test;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import se.oyabun.criters.test.data.Bar;
 import se.oyabun.criters.test.data.Baz;
 import se.oyabun.criters.test.data.Foo;
@@ -32,7 +32,7 @@ import se.oyabun.criters.test.spring.FooRepository;
 import se.oyabun.criters.test.spring.FooSpecification;
 import se.oyabun.criters.test.spring.SpringTestConfiguration;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -45,7 +45,7 @@ import static org.hamcrest.Matchers.not;
  *
  * @author Daniel Sundberg
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfiguration.class)
 public class FooRepositorySearchTest {
 
@@ -67,7 +67,7 @@ public class FooRepositorySearchTest {
     private Bar bar;
     private Baz baz;
 
-    @Before
+    @BeforeEach
     public void before() {
 
         foo = new Foo();

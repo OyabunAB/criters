@@ -15,10 +15,10 @@
  */
 package se.oyabun.criters.util;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import se.oyabun.criters.criteria.Filter;
 import se.oyabun.criters.criteria.Parameter;
 import se.oyabun.criters.criteria.Relation;
@@ -39,7 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  * @author Daniel Sundberg
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FilterUtilTest {
 
     private static final String SOURCE_PARAMETER = "SOURCE_PARAMETER";
@@ -50,7 +50,7 @@ public class FilterUtilTest {
 
     private Method annotatedParameterMethod, annotatedRelationalMethod;
 
-    @Before
+    @BeforeEach
     public void before()
             throws NoSuchMethodException {
 

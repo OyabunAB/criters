@@ -10,10 +10,10 @@ sourceSets {
 
 dependencies {
     testImplementation(project(":criters-engine"))
-    testImplementation("org.hibernate:hibernate-core:${rootProject.extra["hibernateCoreVersion"]}")
+    testImplementation("org.hibernate.orm:hibernate-core:${rootProject.extra["hibernateCoreVersion"]}")
     testImplementation("org.apache.commons:commons-lang3:${rootProject.extra["commonsLangVersion"]}")
     testImplementation("org.slf4j:slf4j-api:${rootProject.extra["slf4jApiVersion"]}")
-    testImplementation("junit:junit:${rootProject.extra["junitVersion"]}")
+    testImplementation("org.junit.jupiter:junit-jupiter:${rootProject.extra["junitJupiterVersion"]}")
     testImplementation(project(":criters-test-core-jpa"))
     testImplementation("ch.qos.logback:logback-classic:${rootProject.extra["logbackClassicVersion"]}")
 }

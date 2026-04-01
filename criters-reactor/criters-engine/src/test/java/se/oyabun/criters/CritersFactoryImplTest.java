@@ -15,29 +15,28 @@
  */
 package se.oyabun.criters;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import se.oyabun.criters.criteria.Filter;
 import se.oyabun.criters.criteria.Parameter;
 import se.oyabun.criters.criteria.Restriction;
 import se.oyabun.criters.exception.InvalidCritersTargetException;
 import se.oyabun.criters.test.data.Foo;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.Metamodel;
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.validateMockitoUsage;
 import static org.mockito.Mockito.when;
 
 /**
@@ -45,7 +44,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Daniel Sundberg
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CritersFactoryImplTest {
 
     private static final Integer EQUALS_VALUE = 1337;
@@ -87,7 +86,7 @@ public class CritersFactoryImplTest {
 
     };
 
-    @Before
+    @BeforeEach
     public void before() {
 
         critersFactory = new CritersFactoryImpl<>();
@@ -125,13 +124,6 @@ public class CritersFactoryImplTest {
     }
 
     public void testCriteria() {
-
-    }
-
-    @After
-    public void after() {
-
-        validateMockitoUsage();
 
     }
 
