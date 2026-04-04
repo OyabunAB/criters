@@ -1,0 +1,135 @@
+/*
+ * Copyright 2017 Oyabun AB
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package se.oyabun.criters.test.data;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+
+/**
+ * Test entity Baz
+ * Neutrally compliant with javax persistence API to enable reuse for different implementations
+ *
+ * @author Daniel Sundberg
+ */
+@Entity
+public class Baz {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    private String value;
+
+    @OneToOne
+    private Bar bar;
+
+    /** Creates a new {@code Baz} entity with default field values. */
+    public Baz() {}
+
+    /**
+     * Returns the entity identifier.
+     *
+     * @return the id
+     */
+    public long getId() {
+
+        return id;
+    }
+
+    /**
+     * Sets the entity identifier.
+     *
+     * @param id the id to set
+     */
+    public void setId(final long id) {
+
+        this.id = id;
+    }
+
+    /**
+     * Returns the associated Bar entity.
+     *
+     * @return the bar
+     */
+    public Bar getBar() {
+
+        return bar;
+
+    }
+
+    /**
+     * Sets the associated Bar entity.
+     *
+     * @param bar the bar to set
+     */
+    public void setBar(Bar bar) {
+
+        this.bar = bar;
+
+    }
+
+    /**
+     * Returns the string value.
+     *
+     * @return the value
+     */
+    public String getValue() {
+
+        return value;
+    }
+
+    /**
+     * Sets the string value.
+     *
+     * @param value the value to set
+     */
+    public void setValue(final String value) {
+
+        this.value = value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final Baz baz = (Baz) o;
+
+        return new EqualsBuilder().append(id,
+                                          baz.id)
+                                  .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder(17,
+                                   37).append(id)
+                                      .toHashCode();
+    }
+}

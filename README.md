@@ -6,7 +6,12 @@
       VMMMP" dMP dMP dMP    dMP   dMMMMMP dMP dMP  VMMMP"
     --------------------------------------------------------------------------------------------------- 
 ---
-# Criters Criteria Automation Engine [![Build Status](https://jenkins.oyabun.se/buildStatus/icon?job=OyabunAB/criters/master)](https://jenkins.oyabun.se/job/OyabunAB/criters/master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.oyabun.criters/criters-reactor/badge.svg)](https://maven-badges.herokuapp.com/maven-central/se.oyabun.criters/criters-reactor)
+# Criters Criteria Automation Engine
+
+[![Build](https://github.com/OyabunAB/criters/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/OyabunAB/criters/actions/workflows/build.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/se.oyabun.criters/criters-engine?label=Maven%20Central)](https://central.sonatype.com/artifact/se.oyabun.criters/criters-engine)
+[![GitHub Packages](https://img.shields.io/badge/GitHub%20Packages-Latest-blue)](https://github.com/OyabunAB/criters/packages)
+
 ### Configuration
 #### Search filter configuration
 
@@ -83,11 +88,29 @@ Annotate your filter object the regular way and let your specifications extend _
    
    }
 ```
+### Installation
+
+#### Maven
+
+```xml
+<dependency>
+    <groupId>se.oyabun.criters</groupId>
+    <artifactId>criters-engine</artifactId>
+    <version>${criters-engine.version}</version>
+</dependency>
+```
+
+#### Gradle
+
+```gradle
+implementation 'se.oyabun.criters:criters-engine:${criters-engine.version}'
+```
+
 ### Project Structure
 
-    ╔═════════════════════════╗ 
-    ║ Criters Project Reactor ║
-    ╚═╤═══════════════════════╝ 
+    ╔════════════════════╗ 
+    ║ Criters Project    ║
+    ╚═╤══════════════════╝ 
       │   ╔═════════════════════╗
       ├───╢ Criters Annotations ║
       │   ╚═════════════════════╝
@@ -109,3 +132,19 @@ Annotate your filter object the regular way and let your specifications extend _
       │   ╔═══════════════════╗
       └───╢ Criters Core Test ║
           ╚═══════════════════╝
+
+### Publishing
+
+The project is published to:
+- **[Maven Central](https://central.sonatype.com/artifact/se.oyabun.criters/criters-engine)** — Release versions
+- **[GitHub Packages](https://github.com/OyabunAB/criters/packages)** — All builds (snapshots and releases)
+
+### Building
+
+```bash
+./gradlew build          # Build all modules
+./gradlew build -x test  # Build without running tests
+./gradlew clean          # Clean build artifacts
+```
+
+Requires Java 21 and Gradle 9.4.1+

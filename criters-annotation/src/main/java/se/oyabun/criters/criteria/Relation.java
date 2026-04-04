@@ -1,0 +1,54 @@
+/*
+ * Copyright 2017 Oyabun AB
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package se.oyabun.criters.criteria;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+
+/**
+ * Filtering relation annotation, used on non-basic type relations.
+ *
+ * @author Daniel Sundberg
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Relation {
+
+    /**
+     * The entity field name of the relation to join.
+     *
+     * @return the relation field name
+     */
+    String name();
+
+    /**
+     * Whether the relation is a collection type and should be treated as iterable.
+     *
+     * @return {@code true} if the relation is iterable, defaults to {@code false}
+     */
+    boolean iterable() default false;
+
+    /**
+     * Parameters to filter on within this relation.
+     *
+     * @return the parameters, defaults to empty array
+     */
+    Parameter[] parameters() default {};
+
+}
