@@ -44,34 +44,66 @@ public class Bar {
     @OneToOne
     private Baz baz;
 
+    /** Creates a new {@code Bar} entity with default field values. */
+    public Bar() {}
 
+    /**
+     * Returns the entity identifier.
+     *
+     * @return the id
+     */
     public long getId() {
 
         return id;
     }
 
+    /**
+     * Sets the entity identifier.
+     *
+     * @param id the id to set
+     */
     public void setId(final long id) {
 
         this.id = id;
     }
 
+    /**
+     * Returns the parent Foo entity.
+     *
+     * @return the foo
+     */
     public Foo getFoo() {
 
         return foo;
 
     }
 
+    /**
+     * Sets the parent Foo entity.
+     *
+     * @param foo the foo to set
+     */
     public void setFoo(Foo foo) {
 
         this.foo = foo;
 
     }
 
+    /**
+     * Returns the associated Baz entity.
+     *
+     * @return the baz
+     */
     public Baz getBaz() {
 
         return baz;
     }
 
+    /**
+     * Sets the associated Baz entity.
+     *
+     * @param baz the baz to set
+     */
     public void setBaz(final Baz baz) {
 
         this.baz = baz;

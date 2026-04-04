@@ -30,6 +30,9 @@ import org.slf4j.LoggerFactory;
 public class CritersSQLSnooper
        implements MessageFormattingStrategy {
 
+    /** Creates a new {@code CritersSQLSnooper} instance. */
+    public CritersSQLSnooper() {}
+
     private static final Logger log = LoggerFactory.getLogger(CritersSQLSnooper.class);
 
     /**

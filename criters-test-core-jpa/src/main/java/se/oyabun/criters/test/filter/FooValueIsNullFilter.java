@@ -21,47 +21,28 @@ import se.oyabun.criters.criteria.Restriction;
 import se.oyabun.criters.test.data.Foo;
 
 /**
- * Parameter restricting Foo typed filter.
+ * IS NULL restriction filter for {@link Foo} entities, matching where {@code value} is null.
+ * The getter return value is not used when building the predicate.
  *
  * @author Daniel Sundberg
  */
-public class FooPropertyFilter
+public class FooValueIsNullFilter
         extends Filter<Foo> {
 
-    private Integer value;
+    /** Creates a new {@code FooValueIsNullFilter}. */
+    public FooValueIsNullFilter() {}
 
     /**
-     * Constructs a filter that matches {@link se.oyabun.criters.test.data.Foo} entities with the given value.
+     * Marker method supplying the field name for the IS NULL predicate.
+     * The returned value is not used when building the predicate.
      *
-     * @param value the integer value to filter by
+     * @return {@code null}
      */
-    public FooPropertyFilter(final Integer value) {
-
-        this.value = value;
-
-    }
-
-    /**
-     * Returns the integer value used as the EQUALS filter criterion.
-     *
-     * @return the filter value
-     */
-    @Parameter(restriction = Restriction.EQUALS,
-               name ="value")
+    @Parameter(restriction = Restriction.IS_NULL,
+               name = "value")
     public Integer getValue() {
 
-        return value;
-
-    }
-
-    /**
-     * Sets the integer value used as the filter criterion.
-     *
-     * @param value the value to set
-     */
-    public void setValue(Integer value) {
-
-        this.value = value;
+        return null;
 
     }
 

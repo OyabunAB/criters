@@ -1,4 +1,3 @@
 dependencies {
-    api(libs.jakartaPersistenceApi)
-    api(libs.commonsLang3)
+    api(libs.bundles.jpa.common)
 }

@@ -5,5 +5,5 @@
   dMP.aMP dMP AMF dMP    dMP   dMP     dMP AMF dP .dMP
   VMMMP" dMP dMP dMP    dMP   dMMMMMP dMP dMP  VMMMP"
 ---------------------------------------------------------------------------------------------------
- Criters Criteria Automation Engine @project.version@ © Oyabun AB 2017
+ Criters Criteria Automation Engine 1.0.1 © Oyabun AB 2017
 ---------------------------------------------------------------------------------------------------

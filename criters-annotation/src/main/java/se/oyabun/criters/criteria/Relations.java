@@ -29,6 +29,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Relations {
 
+    /**
+     * The nested relations to traverse when building join predicates.
+     *
+     * @return the relations, defaults to empty array
+     */
     Relation[] value() default {};
 
 }

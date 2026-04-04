@@ -42,33 +42,66 @@ public class Baz {
     @OneToOne
     private Bar bar;
 
+    /** Creates a new {@code Baz} entity with default field values. */
+    public Baz() {}
+
+    /**
+     * Returns the entity identifier.
+     *
+     * @return the id
+     */
     public long getId() {
 
         return id;
     }
 
+    /**
+     * Sets the entity identifier.
+     *
+     * @param id the id to set
+     */
     public void setId(final long id) {
 
         this.id = id;
     }
 
+    /**
+     * Returns the associated Bar entity.
+     *
+     * @return the bar
+     */
     public Bar getBar() {
 
         return bar;
 
     }
 
+    /**
+     * Sets the associated Bar entity.
+     *
+     * @param bar the bar to set
+     */
     public void setBar(Bar bar) {
 
         this.bar = bar;
 
     }
 
+    /**
+     * Returns the string value.
+     *
+     * @return the value
+     */
     public String getValue() {
 
         return value;
     }
 
+    /**
+     * Sets the string value.
+     *
+     * @param value the value to set
+     */
     public void setValue(final String value) {
 
         this.value = value;

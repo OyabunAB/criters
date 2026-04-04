@@ -70,7 +70,7 @@ public class CritersFactoryImplTest {
     @Mock
     private CriteriaQuery<Foo> criteriaQueryMock;
 
-    private Filter<Foo> filterStubb = new Filter<Foo>() {
+    private final Filter<Foo> filterStub = new Filter<Foo>() {
 
         @Parameter(restriction = Restriction.EQUALS,
                    name = "value")
@@ -119,7 +119,7 @@ public class CritersFactoryImplTest {
             throws InvalidCritersTargetException {
 
         expectEntityManager();
-        critersFactory.use(entityManagerMock).prepare(filterStubb);
+        critersFactory.use(entityManagerMock).prepare(filterStub);
 
     }
 

@@ -30,6 +30,9 @@ public class InvalidFooFilter
 
     private Long invalidValue;
 
+    /** Creates a new {@code InvalidFooFilter} with a null invalid value. */
+    public InvalidFooFilter() {}
+
     /**
      * Getter references non-existing value on Foo
      * @return wrong type, non existing fieldname
@@ -42,6 +45,11 @@ public class InvalidFooFilter
 
     }
 
+    /**
+     * Sets the invalid value.
+     *
+     * @param invalidValue the value to set
+     */
     public void setInvalidValue(Long invalidValue) {
 
         this.invalidValue = invalidValue;

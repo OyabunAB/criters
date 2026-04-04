@@ -10,10 +10,9 @@ sourceSets {
 
 dependencies {
     testImplementation(project(":criters-engine"))
-    testImplementation(libs.hibernateCore)
-    testImplementation(libs.commonsLang3)
-    testImplementation(libs.slf4jApi)
-    testImplementation(libs.junitJupiter)
     testImplementation(project(":criters-test-core-jpa"))
-    testImplementation(libs.logbackClassic)
+    testImplementation(libs.hibernate.core)
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.logback.classic)
 }

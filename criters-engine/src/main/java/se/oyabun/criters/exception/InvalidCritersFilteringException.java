@@ -23,12 +23,23 @@ package se.oyabun.criters.exception;
 public class InvalidCritersFilteringException
         extends CritersSearchCriteriaException {
 
+    /**
+     * Constructs a new exception with the specified detail message.
+     *
+     * @param message the detail message
+     */
     public InvalidCritersFilteringException(final String message) {
 
         super(message);
 
     }
 
+    /**
+     * Constructs a new exception with the specified detail message and cause.
+     *
+     * @param message the detail message
+     * @param cause   the cause
+     */
     public InvalidCritersFilteringException(final String message,
                                             final Throwable cause) {
 

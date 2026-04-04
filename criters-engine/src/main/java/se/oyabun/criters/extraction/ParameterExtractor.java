@@ -26,6 +26,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -39,6 +40,9 @@ import java.util.Optional;
  */
 public class ParameterExtractor
         implements Extractor {
+
+    /** Creates a new {@code ParameterExtractor}. */
+    public ParameterExtractor() {}
 
     private static final String INVALID_RESTRICTION = "No parameter prepared restriction found for '%s'.";
 
@@ -59,7 +63,7 @@ public class ParameterExtractor
 
             final Parameter parameter = method.getAnnotation(Parameter.class);
 
-            FilterUtil.validateParameter(method, parameter.name(), filter.getEntityClass());
+            FilterUtil.validateParameter(method, parameter.name(), filter.getEntityClass(), parameter.restriction());
 
             final Predicate currentPredicate =
                     ParameterExtractor.produce(filter,
@@ -85,6 +89,21 @@ public class ParameterExtractor
 
     /**
      * Produce a predicate from given method and filter values.
+     *
+     * <p>The restriction type on the {@link Parameter} annotation controls which JPA predicate is
+     * built:
+     * <ul>
+     *   <li>{@link se.oyabun.criters.criteria.Restriction#EQUALS} — field = value</li>
+     *   <li>{@link se.oyabun.criters.criteria.Restriction#NOT_EQUALS} — field &lt;&gt; value</li>
+     *   <li>{@link se.oyabun.criters.criteria.Restriction#GREATER_THAN} — field &gt; value</li>
+     *   <li>{@link se.oyabun.criters.criteria.Restriction#GREATER_THAN_OR_EQUALS} — field &gt;= value</li>
+     *   <li>{@link se.oyabun.criters.criteria.Restriction#LESS_THAN} — field &lt; value</li>
+     *   <li>{@link se.oyabun.criters.criteria.Restriction#LESS_THAN_OR_EQUALS} — field &lt;= value</li>
+     *   <li>{@link se.oyabun.criters.criteria.Restriction#LIKE} — field LIKE pattern (String fields only)</li>
+     *   <li>{@link se.oyabun.criters.criteria.Restriction#IS_NULL} — field IS NULL (getter return value ignored)</li>
+     *   <li>{@link se.oyabun.criters.criteria.Restriction#IS_NOT_NULL} — field IS NOT NULL (getter return value ignored)</li>
+     *   <li>{@link se.oyabun.criters.criteria.Restriction#IN} — field IN collection (getter must return {@link Collection})</li>
+     * </ul>
      *
      * @param filter to produce predicates for
      * @param criteriaBuilder to create predicates and combinations with
@@ -130,6 +149,19 @@ public class ParameterExtractor
                 case LESS_THAN:
                     return criteriaBuilder.lessThan(from.get(parameter.name()),
                                                     (Comparable) method.invoke(filter));
+
+                case LIKE:
+                    return criteriaBuilder.like(from.get(parameter.name()),
+                                                (String) method.invoke(filter));
+
+                case IS_NULL:
+                    return criteriaBuilder.isNull(from.get(parameter.name()));
+
+                case IS_NOT_NULL:
+                    return criteriaBuilder.isNotNull(from.get(parameter.name()));
+
+                case IN:
+                    return from.get(parameter.name()).in((Collection<?>) method.invoke(filter));
 
             }
 

@@ -30,10 +30,25 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Relation {
 
+    /**
+     * The entity field name of the relation to join.
+     *
+     * @return the relation field name
+     */
     String name();
 
+    /**
+     * Whether the relation is a collection type and should be treated as iterable.
+     *
+     * @return {@code true} if the relation is iterable, defaults to {@code false}
+     */
     boolean iterable() default false;
 
+    /**
+     * Parameters to filter on within this relation.
+     *
+     * @return the parameters, defaults to empty array
+     */
     Parameter[] parameters() default {};
 
 }

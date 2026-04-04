@@ -10,18 +10,18 @@
 
         <properties>
 
-            <!-- Common properties -->
-            <property name="jakarta.persistence.jdbc.driver" value="com.p6spy.engine.spy.P6SpyDriver" />
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:p6spy:h2:mem:test" />
-            <property name="jakarta.persistence.jdbc.user" value="sa" />
-            <property name="jakarta.persistence.jdbc.password" value="" />
+            <!-- JDBC connection -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.testcontainers.jdbc.ContainerDatabaseDriver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:tc:postgresql:18:///criters"/>
+            <property name="jakarta.persistence.jdbc.user" value="postgres"/>
+            <property name="jakarta.persistence.jdbc.password" value="secret"/>
 
-            <!-- Hibernate properties-->
-            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <!-- Hibernate schema generation -->
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
 
-            <!-- EclipseLink properties-->
-            <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
-            <property name="eclipselink.ddl-generation.output-mode" value="database" />
+            <!-- EclipseLink schema generation -->
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
 
         </properties>
 

@@ -4,8 +4,9 @@ dependencies {
     api(project(":criters-annotation"))
     api(project(":criters-engine"))
     api(project(":criters-test-core"))
-    api(libs.junitJupiter)
+    api(libs.junit.jupiter)
     api(libs.hamcrest)
-    api(libs.h2)
+    api(libs.postgresql)
     api(libs.p6spy)
+    api(libs.bundles.testcontainers)
 }

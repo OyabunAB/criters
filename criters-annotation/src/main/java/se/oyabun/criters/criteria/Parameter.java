@@ -29,10 +29,25 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Parameter {
 
+    /**
+     * Combination strategy controlling how this parameter is joined with others.
+     *
+     * @return the combination annotation, defaults to ungrouped AND
+     */
     Combination combinate() default @Combination;
 
+    /**
+     * The comparison restriction applied when building the predicate.
+     *
+     * @return the restriction type, defaults to {@link Restriction#EQUALS}
+     */
     Restriction restriction() default Restriction.EQUALS;
 
+    /**
+     * The entity field name this parameter maps to.
+     *
+     * @return the field name
+     */
     String name();
 
 }

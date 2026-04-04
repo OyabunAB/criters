@@ -20,48 +20,39 @@ import se.oyabun.criters.criteria.Parameter;
 import se.oyabun.criters.criteria.Restriction;
 import se.oyabun.criters.test.data.Foo;
 
+import java.util.Collection;
+
 /**
- * Parameter restricting Foo typed filter.
+ * IN restriction filter for {@link Foo} entities, matching {@code value} against a collection.
  *
  * @author Daniel Sundberg
  */
-public class FooPropertyFilter
+public class FooInFilter
         extends Filter<Foo> {
 
-    private Integer value;
+    private final Collection<Integer> values;
 
     /**
-     * Constructs a filter that matches {@link se.oyabun.criters.test.data.Foo} entities with the given value.
+     * Constructs a filter that matches {@link Foo} entities whose value is contained in the given collection.
      *
-     * @param value the integer value to filter by
+     * @param values the collection of values to match against
      */
-    public FooPropertyFilter(final Integer value) {
+    public FooInFilter(final Collection<Integer> values) {
 
-        this.value = value;
+        this.values = values;
 
     }
 
     /**
-     * Returns the integer value used as the EQUALS filter criterion.
+     * Returns the collection of values used as the IN filter criterion.
      *
-     * @return the filter value
+     * @return the values collection
      */
-    @Parameter(restriction = Restriction.EQUALS,
-               name ="value")
-    public Integer getValue() {
+    @Parameter(restriction = Restriction.IN,
+               name = "value")
+    public Collection<Integer> getValues() {
 
-        return value;
-
-    }
-
-    /**
-     * Sets the integer value used as the filter criterion.
-     *
-     * @param value the value to set
-     */
-    public void setValue(Integer value) {
-
-        this.value = value;
+        return values;
 
     }
 

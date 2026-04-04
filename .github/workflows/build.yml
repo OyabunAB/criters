@@ -24,11 +24,10 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
-        working-directory: criters-reactor
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: criters-reactor/**/build/test-results/
+          path: "**/build/test-results/"

@@ -15,6 +15,7 @@
  */
 package se.oyabun.criters.eclipselink;
 
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import se.oyabun.criters.test.CritersTest;
 
 /**
@@ -24,5 +25,4 @@ import se.oyabun.criters.test.CritersTest;
  */
 public class EclipseLinkCritersTest
         extends CritersTest {
-
 }

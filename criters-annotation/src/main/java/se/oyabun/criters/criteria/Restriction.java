@@ -20,11 +20,34 @@ package se.oyabun.criters.criteria;
  */
 public enum Restriction {
 
+    /** Field value must equal the filter value. */
     EQUALS,
+
+    /** Field value must not equal the filter value. */
     NOT_EQUALS,
+
+    /** Field value must be strictly greater than the filter value. */
     GREATER_THAN,
+
+    /** Field value must be greater than or equal to the filter value. */
     GREATER_THAN_OR_EQUALS,
+
+    /** Field value must be strictly less than the filter value. */
     LESS_THAN,
-    LESS_THAN_OR_EQUALS
+
+    /** Field value must be less than or equal to the filter value. */
+    LESS_THAN_OR_EQUALS,
+
+    /** Field value must match the given SQL LIKE pattern. */
+    LIKE,
+
+    /** Field value must be null. */
+    IS_NULL,
+
+    /** Field value must not be null. */
+    IS_NOT_NULL,
+
+    /** Field value must be contained in the given collection. */
+    IN
 
 }

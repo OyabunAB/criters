@@ -10,16 +10,13 @@ plugins {
 group = "se.oyabun.criters"
 version = "1.0.2-SNAPSHOT"
 
-val springBootDependenciesBom = libs.springBootDependencies.get().toString()
-
 subprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
-    apply(plugin = "io.spring.dependency-management")
 
     group = "se.oyabun.criters"
-    version = rootProject.version
+    version = "1.0.2-SNAPSHOT"
 
     repositories {
         mavenCentral()
@@ -41,12 +38,9 @@ subprojects {
 
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
-    }
-
-    dependencyManagement {
-        imports {
-            mavenBom(springBootDependenciesBom)
-        }
+        environment("DOCKER_HOST", "unix:///var/run/docker.sock")
+        environment("TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE", "/var/run/docker.sock")
+        environment("DOCKER_API_VERSION", "1.45")
     }
 
     publishing {
@@ -55,7 +49,7 @@ subprojects {
                 from(components["java"])
 
                 pom {
-                    name = "${rootProject.group}:${project.name}"
+                    name = "${group}:${project.name}"
                     description = "Criters engine is a framework for automating searches using JPA."
                     url = "https://github.com/OyabunAB/criters/"
 
@@ -119,10 +113,9 @@ subprojects {
 }
 
 // Exclude test-only modules from publishing
-configure(listOf(
-    project(":criters-test-eclipselink"),
-    project(":criters-test-hibernate")
-)) {
-    publishing.publications.clear()
-    tasks.withType<Sign>().all { enabled = false }
+subprojects {
+    if (name in setOf("criters-test-eclipselink", "criters-test-hibernate")) {
+        publishing.publications.clear()
+        tasks.withType<Sign>().all { enabled = false }
+    }
 }

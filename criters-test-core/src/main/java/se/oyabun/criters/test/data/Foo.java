@@ -44,34 +44,67 @@ public class Foo{
     @OneToMany(mappedBy = "foo")
     private Collection<Bar> bars = new ArrayList<>();
 
+    /** Creates a new {@code Foo} entity with default field values. */
+    public Foo() {}
+
+    /**
+     * Returns the entity identifier.
+     *
+     * @return the id
+     */
     public long getId() {
 
         return id;
     }
 
+    /**
+     * Sets the entity identifier.
+     *
+     * @param id the id to set
+     */
     public void setId(final long id) {
 
         this.id = id;
     }
 
+    /**
+     * Returns the integer value.
+     *
+     * @return the value
+     */
     public Integer getValue() {
 
         return value;
 
     }
 
+    /**
+     * Sets the integer value.
+     *
+     * @param value the value to set
+     */
     public void setValue(Integer value) {
 
         this.value = value;
 
     }
 
+    /**
+     * Returns the associated Bar entities.
+     *
+     * @return the bars collection
+     */
     public Collection<Bar> getBars() {
 
         return bars;
 
     }
 
+    /**
+     * Sets the associated Bar entities.
+     *
+     * @param bars the bars collection to set
+     */
     public void setBars(Collection<Bar> bars) {
 
         this.bars = bars;

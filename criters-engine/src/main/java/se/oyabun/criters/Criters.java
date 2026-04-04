@@ -32,6 +32,9 @@ import java.util.stream.Collectors;
  */
 public class Criters {
 
+    /** Not instantiable; use the static {@link #factory()} method. */
+    private Criters() {}
+
     private static final Logger logger = LoggerFactory.getLogger(Criters.class);
 
     private static final String LINEBREAK = "\n\r";

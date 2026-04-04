@@ -11,8 +11,8 @@ sourceSets {
 dependencies {
     testImplementation(project(":criters-engine"))
     testImplementation(libs.eclipselink)
-    testImplementation(libs.slf4jApi)
     testImplementation(project(":criters-test-core-jpa"))
-    testImplementation(libs.junitJupiter)
-    testImplementation(libs.logbackClassic)
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.logback.classic)
 }

@@ -24,6 +24,7 @@ import jakarta.persistence.criteria.Predicate;
  * Criters search interface providing both a {@link CriteriaQuery} and the ability
  * to produce a combined restrictions {@link Predicate}.
  *
+ * @param <E> type of entity the search targets
  * @author Daniel Sundberg
  */
 public interface CritersSearch<E> {

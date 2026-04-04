@@ -29,13 +29,30 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Combination {
 
+    /**
+     * Group name for combining predicates; empty string means ungrouped.
+     *
+     * @return the combination group identifier
+     */
     String group() default "";
 
+    /**
+     * The logical operator used to combine predicates within the group.
+     *
+     * @return the combine operator, defaults to {@link Combine#AND}
+     */
     Combine combine() default Combine.AND;
 
+    /**
+     * Logical operators for combining JPA predicates.
+     */
     enum Combine {
 
-        AND, OR
+        /** Combine predicates with a logical AND. */
+        AND,
+
+        /** Combine predicates with a logical OR. */
+        OR
 
     }
 

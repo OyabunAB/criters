@@ -27,6 +27,9 @@ public abstract class Filter<E> {
 
     private final Class<E> filterClass;
 
+    /**
+     * Resolves the entity type from the generic type parameter at runtime.
+     */
     public Filter() {
 
         filterClass = (Class<E>) ((ParameterizedType) getClass()
@@ -34,6 +37,11 @@ public abstract class Filter<E> {
 
     }
 
+    /**
+     * Returns the entity class this filter targets.
+     *
+     * @return the entity class
+     */
     public final Class<E> getEntityClass() {
 
         return filterClass;

@@ -23,6 +23,7 @@ import se.oyabun.criters.criteria.Filter;
 import se.oyabun.criters.criteria.Parameter;
 import se.oyabun.criters.criteria.Relation;
 import se.oyabun.criters.criteria.Relations;
+import se.oyabun.criters.criteria.Restriction;
 import se.oyabun.criters.exception.InvalidCritersFilteringException;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -97,20 +98,31 @@ public class FilterUtil {
      * Validate method is corresponding to target type method
      *
      * @param searchCriteriaMethod which should match target type
+     * @param parameterName        the entity field name to validate against
      * @param type on which getter should match
+     * @param restriction on parameter
      * @param <E> target type
      * @throws InvalidCritersFilteringException indicating issues with matching
      */
     public static <E> void validateParameter(final Method searchCriteriaMethod,
                                              final String parameterName,
-                                             final Class<E> type)
+                                             final Class<E> type,
+                                             final Restriction restriction)
             throws InvalidCritersFilteringException {
 
         if(searchCriteriaMethod.isAnnotationPresent(Parameter.class)) {
 
-            validateRelationalParameter(getterOf(parameterName),
-                                        searchCriteriaMethod.getReturnType(),
-                                        type);
+            if(requiresTypeValidation(restriction)) {
+
+                validateRelationalParameter(getterOf(parameterName),
+                                            searchCriteriaMethod.getReturnType(),
+                                            type);
+
+            } else {
+
+                validateFieldExists(getterOf(parameterName), type);
+
+            }
 
         } else {
 
@@ -181,9 +193,17 @@ public class FilterUtil {
 
                         }
 
-                        validateRelationalParameter(getterOf(parameter.name()),
-                                                    method.getReturnType(),
-                                                    targetType);
+                        if(requiresTypeValidation(parameter.restriction())) {
+
+                            validateRelationalParameter(getterOf(parameter.name()),
+                                                        method.getReturnType(),
+                                                        targetType);
+
+                        } else {
+
+                            validateFieldExists(getterOf(parameter.name()), targetType);
+
+                        }
 
                     }
 
@@ -357,6 +377,32 @@ public class FilterUtil {
     private static String getterOf(final String propertName) {
 
         return GETTER_PREFIX + StringUtils.capitalize(propertName);
+
+    }
+
+    private static boolean requiresTypeValidation(final Restriction restriction) {
+
+        return restriction != Restriction.IS_NULL &&
+               restriction != Restriction.IS_NOT_NULL &&
+               restriction != Restriction.IN;
+
+    }
+
+    private static <E> void validateFieldExists(final String expectedMethodName,
+                                                final Class<E> type)
+            throws InvalidCritersFilteringException {
+
+        boolean exists = Arrays.stream(type.getMethods())
+                               .anyMatch(method -> method.getName().equals(expectedMethodName));
+
+        if(!exists) {
+
+            throw new InvalidCritersFilteringException(
+                    String.format(MISMATCHING_GETTERS,
+                                  type.getSimpleName(),
+                                  expectedMethodName));
+
+        }
 
     }
 

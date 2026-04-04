@@ -34,6 +34,12 @@ public class FooRelationFilter
 
     private String bazValue;
 
+    /**
+     * Constructs a filter that matches via bar id and baz value relations.
+     *
+     * @param barId    the id of the related {@link se.oyabun.criters.test.data.Bar} to filter by
+     * @param bazValue the value of the related {@link se.oyabun.criters.test.data.Baz} to filter by
+     */
     public FooRelationFilter(final long barId,
                              final String bazValue) {
 
@@ -41,6 +47,11 @@ public class FooRelationFilter
         this.bazValue = bazValue;
     }
 
+    /**
+     * Returns the bar id used as the relational EQUALS filter criterion.
+     *
+     * @return the bar id
+     */
     @Relations({
             @Relation(name="bars",
                       iterable = true,
@@ -54,11 +65,21 @@ public class FooRelationFilter
         return barId;
     }
 
+    /**
+     * Sets the bar id used as the relational filter criterion.
+     *
+     * @param barId the bar id to set
+     */
     public void setBarValue(long barId) {
 
         this.barId = barId;
     }
 
+    /**
+     * Returns the baz value used as the nested relational EQUALS filter criterion.
+     *
+     * @return the baz value
+     */
     @Relations({
             @Relation(name = "bars",
                       iterable = true),

@@ -42,6 +42,9 @@ import java.util.Optional;
 public class RelationExtractor
         implements Extractor {
 
+    /** Creates a new {@code RelationExtractor}. */
+    public RelationExtractor() {}
+
     /**
      * ${@inheritDoc}
      */
