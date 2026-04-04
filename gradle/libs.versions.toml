@@ -1,5 +1,4 @@
 [versions]
-java = "21"
 jakarta_persistence_api = "3.2.0"
 hibernate_core = "7.3.0.Final"
 eclipselink = "5.0.0"
@@ -60,4 +59,6 @@ spring_testing = [
 ]
 
 [plugins]
-springDependencyManagement = { id = "io.spring.dependency-management", version = "1.1.6" }
+java_library = { id = "org.gradle.java-library" }
+maven_publish = { id = "org.gradle.maven-publish" }
+signing = { id = "org.gradle.signing" }

@@ -1,3 +1,7 @@
+plugins {
+    alias(libs.plugins.java.library)
+}
+
 group = "se.oyabun.criters.test"
 
 // This module only contains test code, no main sources
