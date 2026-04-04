@@ -45,8 +45,14 @@ public abstract class CritersSpecification<E, S extends Filter<E>>
     private static final String INVALID_CRITERIA_TYPE =
             "CriteriaQuery type '%s' must correspond to Criters search filter type '%s'.";
 
+    /** The search filter providing criteria values for predicate generation. */
     private final S searchFilter;
 
+    /**
+     * Constructs a specification backed by the given search filter.
+     *
+     * @param searchFilter the filter supplying criteria values
+     */
     public CritersSpecification(final S searchFilter) {
 
         this.searchFilter = searchFilter;

@@ -15,12 +15,16 @@
  */
 package se.oyabun.criters.test;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import se.oyabun.criters.test.data.Bar;
 import se.oyabun.criters.test.data.Baz;
 import se.oyabun.criters.test.data.Foo;
@@ -45,14 +49,14 @@ import static org.hamcrest.Matchers.not;
  *
  * @author Daniel Sundberg
  */
+@Testcontainers
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfiguration.class)
 public class FooRepositorySearchTest {
-
-    private static long NON_EXISTING_BAR_ID = -123L;
-    private static int FOO_VALUE = 1337;
-    private static int NON_EXISTING_FOO_VALUE = -321;
-    private static String BAZ_VALUE = "value";
+    private static final long NON_EXISTING_BAR_ID = -123L;
+    private static final int FOO_VALUE = 1337;
+    private static final int NON_EXISTING_FOO_VALUE = -321;
+    private static final String BAZ_VALUE = "value";
 
     @Autowired
     private FooRepository fooRepository;
