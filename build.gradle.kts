@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "se.oyabun.criters"
-version = "1.0.2-SNAPSHOT"
+version = "1.0.2"
 
 subprojects {
     apply(plugin = "java-library")
@@ -16,7 +16,7 @@ subprojects {
     apply(plugin = "signing")
 
     group = "se.oyabun.criters"
-    version = "1.0.2-SNAPSHOT"
+    version = "1.0.2"
 
     repositories {
         mavenCentral()
