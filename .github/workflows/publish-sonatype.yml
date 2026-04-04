@@ -1,5 +1,8 @@
 name: Publish to Sonatype
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
 
