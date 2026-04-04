@@ -9,13 +9,15 @@
 # Criters Criteria Automation Engine
 
 [![Build](https://github.com/OyabunAB/criters/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/OyabunAB/criters/actions/workflows/build.yml)
-[![GitHub Packages](https://img.shields.io/badge/GitHub%20Packages-1.0.2-blue)](https://github.com/OyabunAB/criters/packages)
+[![Latest Release](https://img.shields.io/github/v/release/OyabunAB/criters)](https://github.com/OyabunAB/criters/releases/latest)
+
+> Replace `{version}` in the snippets below with the version shown in the badge above.
 
 ### Configuration
 #### Search filter configuration
 
 ```kotlin
-implementation("se.oyabun.criters:criters-annotation:1.0.2")
+implementation("se.oyabun.criters:criters-annotation:{version}")
 ```
 
 Annotate your filter objects with the criters filter annotations.
@@ -47,7 +49,7 @@ Annotate your filter objects with the criters filter annotations.
 #### Engine configuration
 
 ```kotlin
-implementation("se.oyabun.criters:criters-engine:1.0.2")
+implementation("se.oyabun.criters:criters-engine:{version}")
 ```
 
 Use the convenient _Criters_ factory builder to instantiate your criters factory.
@@ -65,7 +67,7 @@ You then need to configure the factory to use an entity manager or a root, crite
 #### Spring Data JPA
 
 ```kotlin
-implementation("se.oyabun.criters:criters-spring-data-jpa:1.0.2")
+implementation("se.oyabun.criters:criters-spring-data-jpa:{version}")
 ```
 
 Annotate your filter object the regular way and let your specifications extend _CritersSpecification<E, F extends Filter\<E\>>_.
@@ -86,13 +88,13 @@ Annotate your filter object the regular way and let your specifications extend _
 #### Gradle (Kotlin DSL)
 
 ```kotlin
-implementation("se.oyabun.criters:criters-engine:1.0.2")
+implementation("se.oyabun.criters:criters-engine:{version}")
 ```
 
 #### Gradle (Groovy DSL)
 
 ```groovy
-implementation 'se.oyabun.criters:criters-engine:1.0.2'
+implementation 'se.oyabun.criters:criters-engine:{version}'
 ```
 
 ### Project Structure

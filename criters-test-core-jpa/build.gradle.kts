@@ -55,18 +55,6 @@ publishing {
     }
     repositories {
         maven {
-            name = "sonatype"
-            url = if (version.toString().endsWith("SNAPSHOT")) {
-                URI("https://oss.sonatype.org/content/repositories/snapshots")
-            } else {
-                URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-            }
-            credentials {
-                username = project.findProperty("ossrhUsername")?.toString()
-                password = project.findProperty("ossrhPassword")?.toString()
-            }
-        }
-        maven {
             name = "github"
             url = URI("https://maven.pkg.github.com/OyabunAB/criters")
             credentials {
