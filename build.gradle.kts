@@ -1,3 +1,5 @@
+import org.gradle.plugins.signing.Sign
+
 plugins {
     alias(libs.plugins.java.library)
 }
@@ -29,5 +31,9 @@ subprojects {
 
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
+    }
+
+    tasks.withType<Sign>().configureEach {
+        onlyIf { project.hasProperty("signing.keyId") }
     }
 }
