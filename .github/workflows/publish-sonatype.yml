@@ -5,6 +5,10 @@ permissions:
 
 on:
   workflow_dispatch:
+    inputs:
+      releaseVersion:
+        description: 'Version to publish (e.g. 1.0.3)'
+        required: true
 
 jobs:
   publish-sonatype:
@@ -23,11 +27,12 @@ jobs:
           cache: gradle
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -PreleaseVersion=${{ inputs.releaseVersion }}
 
       - name: Publish to Sonatype
         run: |
           ./gradlew publishSonatypePublicationToSonatypeRepository \
+            -PreleaseVersion=${{ inputs.releaseVersion }} \
             -PossrhUsername="${{ secrets.OSSRH_USERNAME }}" \
             -PossrhPassword="${{ secrets.OSSRH_PASSWORD }}" \
             -Psigning.keyId="${{ secrets.SIGNING_KEY_ID }}" \

@@ -5,13 +5,13 @@ plugins {
 }
 
 group = "se.oyabun.criters"
-version = "1.0.2"
+version = findProperty("releaseVersion") ?: "0.0.0"
 
 subprojects {
     apply(plugin = "java-library")
 
     group = "se.oyabun.criters"
-    version = "1.0.2"
+    version = rootProject.version
 
     repositories {
         mavenCentral()

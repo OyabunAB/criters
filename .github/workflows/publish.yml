@@ -21,10 +21,10 @@ jobs:
           cache: gradle
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -PreleaseVersion=${GITHUB_REF_NAME#v}
 
       - name: Publish to GitHub Packages
-        run: ./gradlew publish
+        run: ./gradlew publish -PreleaseVersion=${GITHUB_REF_NAME#v}
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
