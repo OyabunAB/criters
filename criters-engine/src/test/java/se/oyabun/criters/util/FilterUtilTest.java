@@ -85,7 +85,7 @@ public class FilterUtilTest {
 
     }
 
-    public class TestFilter
+    public static class TestFilter
            extends Filter<Foo> {
 
         @Parameter(restriction = Restriction.EQUALS,

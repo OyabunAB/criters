@@ -4,7 +4,6 @@ plugins {
 
 group = "se.oyabun.criters.test"
 
-// This module only contains test code, no main sources
 sourceSets {
     main {
         java.setSrcDirs(emptySet<String>())
@@ -14,9 +13,9 @@ sourceSets {
 
 dependencies {
     testImplementation(project(":criters-engine"))
-    testImplementation(libs.eclipselink)
     testImplementation(project(":criters-test-core-jpa"))
+    testImplementation(libs.eclipselink)
     testImplementation(libs.junit.jupiter)
-    testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.logback.classic)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }

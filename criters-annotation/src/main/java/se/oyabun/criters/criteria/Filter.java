@@ -30,6 +30,7 @@ public abstract class Filter<E> {
     /**
      * Resolves the entity type from the generic type parameter at runtime.
      */
+    @SuppressWarnings("unchecked")
     public Filter() {
 
         filterClass = (Class<E>) ((ParameterizedType) getClass()

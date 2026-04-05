@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Extractor producing predicates for filter parameters
@@ -106,7 +107,7 @@ public class ParameterExtractor
      * </ul>
      *
      * @param filter to produce predicates for
-     * @param criteriaBuilder to create predicates and combinations with
+     * @param builder to create predicates and combinations with
      * @param from root of parameter
      * @param parameter annotation instance to parse predicate restriction from
      * @param method containing values when invoked
@@ -114,64 +115,66 @@ public class ParameterExtractor
      * @return annotation configured predicate
      * @throws InvalidCritersFilteringException when not matching any restriction or failing to invoke method
      */
-    static <S> Predicate produce(final S filter,
-                                 final CriteriaBuilder criteriaBuilder,
-                                 final From from,
-                                 final Parameter parameter,
-                                 final Method method)
+    static <S,A,B> Predicate produce(final S filter,
+                                     final CriteriaBuilder builder,
+                                     final From<A, B> from,
+                                     final Parameter parameter,
+                                     final Method method)
 
             throws InvalidCritersFilteringException {
 
         try {
 
-            switch (parameter.restriction()) {
-
-                case EQUALS:
-                    return criteriaBuilder.equal(from.get(parameter.name()),
-                                                 method.invoke(filter));
-
-                case NOT_EQUALS:
-                    return criteriaBuilder.notEqual(from.get(parameter.name()),
-                                                    method.invoke(filter));
-
-                case GREATER_THAN_OR_EQUALS:
-                    return criteriaBuilder.greaterThanOrEqualTo(from.get(parameter.name()),
-                                                                (Comparable) method.invoke(filter));
-
-                case GREATER_THAN:
-                    return criteriaBuilder.greaterThan(from.get(parameter.name()),
-                                                       (Comparable) method.invoke(filter));
-
-                case LESS_THAN_OR_EQUALS:
-                    return criteriaBuilder.lessThanOrEqualTo(from.get(parameter.name()),
-                                                             (Comparable) method.invoke(filter));
-
-                case LESS_THAN:
-                    return criteriaBuilder.lessThan(from.get(parameter.name()),
-                                                    (Comparable) method.invoke(filter));
-
-                case LIKE:
-                    return criteriaBuilder.like(from.get(parameter.name()),
-                                                (String) method.invoke(filter));
-
-                case IS_NULL:
-                    return criteriaBuilder.isNull(from.get(parameter.name()));
-
-                case IS_NOT_NULL:
-                    return criteriaBuilder.isNotNull(from.get(parameter.name()));
-
-                case IN:
-                    return from.get(parameter.name()).in((Collection<?>) method.invoke(filter));
-
-            }
-
-            throw new InvalidCritersFilteringException(String.format(INVALID_RESTRICTION, method.getName()));
+            return switch (parameter.restriction()) {
+                case EQUALS -> builder.equal(from.get(parameter.name()), method.invoke(filter));
+                case NOT_EQUALS -> builder.notEqual(from.get(parameter.name()), method.invoke(filter));
+                case GREATER_THAN -> applyComparison(method, method.invoke(filter),
+                        v -> builder.greaterThan(from.get(parameter.name()), v));
+                case GREATER_THAN_OR_EQUALS -> applyComparison(method, method.invoke(filter),
+                        v -> builder.greaterThanOrEqualTo(from.get(parameter.name()), v));
+                case LESS_THAN -> applyComparison(method, method.invoke(filter),
+                        v -> builder.lessThan(from.get(parameter.name()), v));
+                case LESS_THAN_OR_EQUALS -> applyComparison(method, method.invoke(filter),
+                        v -> builder.lessThanOrEqualTo(from.get(parameter.name()), v));
+                case LIKE -> builder.like(from.get(parameter.name()),
+                        (String) method.invoke(filter));
+                case IS_NULL -> builder.isNull(from.get(parameter.name()));
+                case IS_NOT_NULL -> builder.isNotNull(from.get(parameter.name()));
+                case IN -> {
+                    final Object value = method.invoke(filter);
+                    if (value instanceof Collection<?> collection) {
+                        yield from.get(parameter.name()).in(collection);
+                    }
+                    throw new InvalidCritersFilteringException(
+                            INVALID_RESTRICTION.formatted(parameter.name()));
+                }
+            };
 
         } catch (IllegalAccessException | InvocationTargetException e) {
 
             throw new InvalidCritersFilteringException(METHOD_INVOCATION, e);
 
         }
+
+    }
+
+    /**
+     * Applies a comparison predicate factory to a runtime value after casting it through
+     * the method's declared return type.
+     *
+     * <p>{@code Class.asSubclass} and {@code Class.cast} perform genuine runtime type checks,
+     * so the only unchecked operation is narrowing {@code Class<? extends Comparable>} to
+     * {@code Class<Y>} — which type-erasure makes unavoidable but which is safe because
+     * {@link FilterUtil#validateParameter} already verified the field is Comparable-typed.
+     */
+    @SuppressWarnings("unchecked")
+    private static <Y extends Comparable<? super Y>> Predicate applyComparison(
+            final Method method,
+            final Object rawValue,
+            final Function<Y, Predicate> factory) {
+
+        final Class<Y> type = (Class<Y>) method.getReturnType().asSubclass(Comparable.class);
+        return factory.apply(type.cast(rawValue));
 
     }
 

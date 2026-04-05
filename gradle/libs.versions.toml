@@ -35,7 +35,7 @@ spring_data_jpa = { module = "org.springframework.data:spring-data-jpa", version
 spring_test = { module = "org.springframework:spring-test", version.ref = "spring" }
 
 [bundles]
-jpa_common = [
+common = [
     "jakarta_persistence_api",
     "commons_lang3",
     "slf4j_api",
@@ -47,8 +47,7 @@ testing = [
     "mockito_core",
     "mockito_jupiter",
     "logback_classic",
-]
-testcontainers = [
+    "postgresql",
     "testcontainers",
     "testcontainers_postgresql",
     "testcontainers_junit",
@@ -61,4 +60,3 @@ spring_testing = [
 [plugins]
 java_library = { id = "org.gradle.java-library" }
 maven_publish = { id = "org.gradle.maven-publish" }
-signing = { id = "org.gradle.signing" }
