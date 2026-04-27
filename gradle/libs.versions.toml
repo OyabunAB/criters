@@ -11,7 +11,7 @@ mockito_core = "5.23.0"
 p6spy = "3.9.1"
 spring_data_jpa = "4.0.4"
 spring = "7.0.6"
-testcontainers = "2.0.4"
+testcontainers = "2.0.5"
 postgresql = "42.7.10"
 
 [libraries]
