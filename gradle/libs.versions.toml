@@ -1,6 +1,6 @@
 [versions]
 jakarta_persistence_api = "3.2.0"
-hibernate_core = "7.3.0.Final"
+hibernate_core = "7.3.2.Final"
 eclipselink = "5.0.0"
 commons_lang3 = "3.20.0"
 slf4j_api = "2.0.17"
